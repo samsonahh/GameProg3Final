@@ -6,7 +6,7 @@ namespace Samson
 {
     public class FirstPersonCamera : MonoBehaviour
     {
-        public Transform Target;
+        public Transform Target { get; set; }
         public float MouseSensitivity = 10f;
 
         private float verticalRotation;

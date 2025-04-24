@@ -45,6 +45,7 @@ namespace Samson
             {
                 Camera = Camera.main;
                 Camera.GetComponent<FirstPersonCamera>().Target = cameraTarget;
+                Cursor.lockState = CursorLockMode.Locked;
 
                 SetLayerRecursively(modelObject, LayerMask.NameToLayer("HideFromLocal"));
             }

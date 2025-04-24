@@ -6,10 +6,12 @@ namespace Samson
 {
     public class Player : NetworkBehaviour
     {
-        private Vector3 _velocity;
-        private bool _jumpPressed;
+        public Camera Camera;
 
-        private CharacterController _controller;
+        private Vector3 velocity;
+        private bool jumpPressed;
+
+        private CharacterController controller;
 
         public float PlayerSpeed = 2f;
 
@@ -18,14 +20,23 @@ namespace Samson
 
         private void Awake()
         {
-            _controller = GetComponent<CharacterController>();
+            controller = GetComponent<CharacterController>();
+        }
+
+        public override void Spawned()
+        {
+            if (HasStateAuthority)
+            {
+                Camera = Camera.main;
+                Camera.GetComponent<FirstPersonCamera>().Target = transform;
+            }
         }
 
         void Update()
         {
             if (Input.GetButtonDown("Jump"))
             {
-                _jumpPressed = true;
+                jumpPressed = true;
             }
         }
 
@@ -33,26 +44,27 @@ namespace Samson
         {
             // FixedUpdateNetwork is only executed on the StateAuthority
 
-            if (_controller.isGrounded)
+            if (controller.isGrounded)
             {
-                _velocity = new Vector3(0, -1, 0);
+                velocity = new Vector3(0, -1, 0);
             }
 
-            Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * Runner.DeltaTime * PlayerSpeed;
+            Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.eulerAngles.y, 0);
+            Vector3 move = cameraRotationY * new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")) * Runner.DeltaTime * PlayerSpeed;
 
-            _velocity.y += GravityValue * Runner.DeltaTime;
-            if (_jumpPressed && _controller.isGrounded)
+            velocity.y += GravityValue * Runner.DeltaTime;
+            if (jumpPressed && controller.isGrounded)
             {
-                _velocity.y += JumpForce;
+                velocity.y += JumpForce;
             }
-            _controller.Move(move + _velocity * Runner.DeltaTime);
+            controller.Move(move + velocity * Runner.DeltaTime);
 
             if (move != Vector3.zero)
             {
                 gameObject.transform.forward = move;
             }
 
-            _jumpPressed = false;
+            jumpPressed = false;
         }
     }
 }

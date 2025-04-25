@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: -710015332866956217}
   - component: {fileID: 1337839757048805721}
   - component: {fileID: 7973798135634979079}
+  - component: {fileID: 8133703474376625185}
   - component: {fileID: 3928257158043229628}
   - component: {fileID: -8494884843628743421}
   - component: {fileID: 8785944884230123191}
@@ -85,11 +86,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   modelObject: {fileID: 3566571346464658357}
   cameraTarget: {fileID: 5526710990988935658}
-  baseSpeed: 2
+  baseSpeed: 3
   rotationSpeed: 10
   _NetworkedSpeedModifier: 1
   _NetworkedMoveInput: {x: 0, y: 0}
-  sprintModifier: 2
+  sprintModifier: 1.5
   jumpHeight: 2
 --- !u!114 &1337839757048805721
 MonoBehaviour:
@@ -105,7 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionDuration: 0.1
   animatorMoveSpeedLerpMultiplier: 10
-  jumpToFallDuration: 0.15
+  jumpToFallDuration: 0.5
 --- !u!114 &7973798135634979079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +127,22 @@ MonoBehaviour:
   dragMaxDistance: 5
   zoomSpeed: 10
   shootForce: 25
+  dragVisualPrefab: {fileID: 3276877055539761359, guid: 06ea3cda71b6e2c44b254c8a0d56eebe,
+    type: 3}
+--- !u!114 &8133703474376625185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7110019169024637138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf90208c425ce146a1c539aeb37ff80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerUIPrefab: {fileID: 5964427988511915136, guid: 10defa30f8fbfbd4886a14dc79950250,
+    type: 3}
 --- !u!114 &3928257158043229628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +163,7 @@ MonoBehaviour:
   - {fileID: -710015332866956217}
   - {fileID: 1337839757048805721}
   - {fileID: 7973798135634979079}
+  - {fileID: 8133703474376625185}
   - {fileID: -8494884843628743421}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-8494884843628743421

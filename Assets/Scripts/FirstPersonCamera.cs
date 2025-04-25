@@ -7,10 +7,25 @@ namespace Samson
     public class FirstPersonCamera : MonoBehaviour
     {
         public Transform Target { get; set; }
-        public float MouseSensitivity = 10f;
+        [SerializeField] private float mouseSensitivity = 10f;
 
         private float verticalRotation;
         private float horizontalRotation;
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Plus))
+            {
+                mouseSensitivity += 0.25f;
+            }
+
+            if(Input.GetKeyDown(KeyCode.Minus))
+            {
+                mouseSensitivity -= 0.25f;
+            }
+
+            mouseSensitivity = Mathf.Clamp(mouseSensitivity, 1f, 100f);
+        }
 
         private void LateUpdate()
         {
@@ -21,10 +36,10 @@ namespace Samson
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
-            verticalRotation -= mouseY * MouseSensitivity * Time.deltaTime;
-            verticalRotation = Mathf.Clamp(verticalRotation, -70f, 70f);
+            verticalRotation -= mouseY * mouseSensitivity;
+            verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
 
-            horizontalRotation += mouseX * MouseSensitivity * Time.deltaTime;
+            horizontalRotation += mouseX * mouseSensitivity;
 
             transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
         }

@@ -12,12 +12,12 @@ namespace Samson
 
         private float originalAngularDrag;
 
-        private class DragData
+        public class DragData
         {
-            public Vector3 TargetPosition { get; set; }
-            public Transform DragTransform { get; set; }
-            public float Force { get; set; }
-            public float Damping { get; set; }
+            public Vector3 TargetPosition { get; private set; }
+            public Transform DragTransform { get; private set; }
+            public float Force { get; private set; }
+            public float Damping { get; private set; }
             public DragData(Vector3 targetPosition, Transform dragTransform, float force, float damping)
             {
                 TargetPosition = targetPosition;
@@ -27,7 +27,7 @@ namespace Samson
             }
         }
 
-        private Dictionary<PlayerRef, DragData> dragForces { get; set; } = new();
+        private Dictionary<PlayerRef, DragData> dragForces = new();
 
         private void Awake()
         {
@@ -36,7 +36,7 @@ namespace Samson
             originalAngularDrag = rigidBody.angularDrag;
         }
 
-        private void FixedUpdate()
+        public override void FixedUpdateNetwork()
         {
             ApplyNetworkedDragForces();
         }
@@ -131,15 +131,19 @@ namespace Samson
         {
             if (!dragForces.ContainsKey(player)) return;
 
-            Transform dragTransform = dragForces[player].DragTransform;
-            if (dragTransform == null) return;
-
-            rigidBody.AddForceAtPosition(direction * force, dragTransform.position, ForceMode.Impulse);
+            rigidBody.AddForce(direction * force, ForceMode.Impulse);
         }
 
         private void ResetAngularDrag()
         {
             rigidBody.angularDrag = originalAngularDrag;
+        }
+
+        public Transform GetDragTransform(PlayerRef player)
+        {
+            if (!dragForces.ContainsKey(player)) return null;
+
+            return dragForces[player].DragTransform;
         }
     }
 }

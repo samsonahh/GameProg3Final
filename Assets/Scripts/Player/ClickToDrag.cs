@@ -22,6 +22,10 @@ namespace Samson
         [SerializeField] private float shootForce = 25f;
         private bool shootPressed;
 
+        [Header("Drag Visual")]
+        [SerializeField] private GameObject dragVisualPrefab;
+        private GameObject dragVisualInstance;
+
         private void Update()
         {
             if (!HasStateAuthority) return;
@@ -29,6 +33,7 @@ namespace Samson
             HandleDragInput();
             HandleDragZoom();
             HandleShootInput();
+            VisualizeDrag();
         }
 
         private void HandleShootInput()
@@ -65,18 +70,50 @@ namespace Samson
 
         public override void FixedUpdateNetwork()
         {
+            HandleDrag();
+
             HandleShoot();
 
             shootPressed = false;
         }
 
-        private void FixedUpdate()
+        private void HandleDrag()
         {
             if (currentDragObject == null) return;
 
             Vector3 dragTargetPoint = ray.origin + ray.direction * dragCurrentDistance;
 
             currentDragObject.UpdateDragSourceRpc(Runner.LocalPlayer, dragTargetPoint);
+        }
+
+        private void VisualizeDrag()
+        {
+            if(currentDragObject == null)
+            {
+                RemoveDragVisualInstance();
+                return;
+            }
+
+            Transform dragTransform = currentDragObject.GetDragTransform(Runner.LocalPlayer);
+            if(dragTransform == null)
+            {
+                RemoveDragVisualInstance();
+                return;
+            }
+
+            if (dragVisualInstance == null)
+            {
+                dragVisualInstance = Instantiate(dragVisualPrefab, dragTransform);
+            }
+        }
+
+        private void RemoveDragVisualInstance()
+        {
+            if (dragVisualInstance != null)
+            {
+                Destroy(dragVisualInstance);
+                dragVisualInstance = null;
+            }
         }
 
         private void HandleDragZoom()

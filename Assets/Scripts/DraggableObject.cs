@@ -12,7 +12,22 @@ namespace Samson
 
         private float originalAngularDrag;
 
-        private Dictionary<PlayerRef, (Vector3, Transform, float, float)> dragForces { get; set; } = new();
+        private class DragData
+        {
+            public Vector3 TargetPosition { get; set; }
+            public Transform DragTransform { get; set; }
+            public float Force { get; set; }
+            public float Damping { get; set; }
+            public DragData(Vector3 targetPosition, Transform dragTransform, float force, float damping)
+            {
+                TargetPosition = targetPosition;
+                DragTransform = dragTransform;
+                Force = force;
+                Damping = damping;
+            }
+        }
+
+        private Dictionary<PlayerRef, DragData> dragForces { get; set; } = new();
 
         private void Awake()
         {
@@ -30,13 +45,13 @@ namespace Samson
         {
             if (!HasStateAuthority) return;
 
-            foreach(var dragForce in new Dictionary<PlayerRef, (Vector3, Transform, float, float)>(dragForces))
+            foreach(var dragForce in new Dictionary<PlayerRef, DragData>(dragForces))
             {
                 PlayerRef player = dragForce.Key;
-                Vector3 targetPosition = dragForce.Value.Item1;
-                Transform dragTransform = dragForce.Value.Item2;
-                float force = dragForce.Value.Item3;
-                float damp = dragForce.Value.Item4;
+                Vector3 targetPosition = dragForce.Value.TargetPosition;
+                Transform dragTransform = dragForce.Value.DragTransform;
+                float force = dragForce.Value.Force;
+                float damp = dragForce.Value.Damping;
 
                 if (dragTransform == null)
                 {
@@ -66,17 +81,17 @@ namespace Samson
 
             if (dragForces.ContainsKey(player))
             {
-                Transform existingTransform = dragForces[player].Item2;
+                Transform existingTransform = dragForces[player].DragTransform;
                 if(existingTransform != null)
                 {
                     Destroy(existingTransform.gameObject);
                 }
 
-                dragForces[player] = (targetPosition, dragTransform, dragForce, dragDamping);
+                dragForces[player] = new DragData(targetPosition, dragTransform, dragForce, dragDamping);
             }
             else
             {
-                dragForces.Add(player, (targetPosition, dragTransform, dragForce, dragDamping));
+                dragForces.Add(player, new DragData(targetPosition, dragTransform, dragForce, dragDamping));
             }
         }
 
@@ -88,7 +103,7 @@ namespace Samson
                 return;
             }
 
-            dragForces[player] = (targetPosition, dragForces[player].Item2, dragForces[player].Item3, dragForces[player].Item4);
+            dragForces[player] = new DragData(targetPosition, dragForces[player].DragTransform, dragForces[player].Force, dragForces[player].Damping);
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -96,7 +111,7 @@ namespace Samson
         {
             if(dragForces.ContainsKey(player))
             {
-                Transform existingTransform = dragForces[player].Item2;
+                Transform existingTransform = dragForces[player].DragTransform;
                 if(existingTransform != null)
                 {
                     Destroy(existingTransform.gameObject);

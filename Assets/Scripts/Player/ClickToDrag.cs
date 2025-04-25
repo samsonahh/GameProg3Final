@@ -18,12 +18,25 @@ namespace Samson
         private Ray ray;
         private DraggableObject currentDragObject;
 
+        [Header("Shoot")]
+        [SerializeField] private float shootForce = 25f;
+        private bool shootPressed;
+
         private void Update()
         {
             if (!HasStateAuthority) return;
 
             HandleDragInput();
             HandleDragZoom();
+            HandleShootInput();
+        }
+
+        private void HandleShootInput()
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                shootPressed = true;
+            }
         }
 
         private void HandleDragInput()
@@ -48,6 +61,13 @@ namespace Samson
 
                 StartDrag(hit);
             }
+        }
+
+        public override void FixedUpdateNetwork()
+        {
+            HandleShoot();
+
+            shootPressed = false;
         }
 
         private void FixedUpdate()
@@ -82,6 +102,15 @@ namespace Samson
                 currentDragObject.RemoveDragSourceRpc(Runner.LocalPlayer);
             }
             currentDragObject = null;
+        }
+
+        private void HandleShoot()
+        {
+            if (!shootPressed) return;
+            if(currentDragObject == null) return;
+
+            currentDragObject.LaunchRpc(Runner.LocalPlayer, ray.direction.normalized, shootForce);
+            currentDragObject.RemoveDragSourceRpc(Runner.LocalPlayer);
         }
     }
 }

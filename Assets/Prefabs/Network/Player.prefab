@@ -88,6 +88,7 @@ MonoBehaviour:
   baseSpeed: 2
   rotationSpeed: 10
   _NetworkedSpeedModifier: 1
+  _NetworkedMoveInput: {x: 0, y: 0}
   sprintModifier: 2
   jumpHeight: 2
 --- !u!114 &1337839757048805721
@@ -104,7 +105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionDuration: 0.1
   animatorMoveSpeedLerpMultiplier: 10
-  jumpToFallDuration: 0.1
+  jumpToFallDuration: 0.15
 --- !u!114 &7973798135634979079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,9 +121,11 @@ MonoBehaviour:
   dragForce: 10
   dragDamping: 1
   dragBreakDistance: 5
+  draggedObjectAngularDrag: 2
   dragMinDistance: 1
   dragMaxDistance: 5
   zoomSpeed: 10
+  shootForce: 25
 --- !u!114 &3928257158043229628
 MonoBehaviour:
   m_ObjectHideFlags: 0

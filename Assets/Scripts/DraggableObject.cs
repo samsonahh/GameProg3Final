@@ -126,6 +126,17 @@ namespace Samson
             }
         }
 
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void LaunchRpc(PlayerRef player, Vector3 direction, float force)
+        {
+            if (!dragForces.ContainsKey(player)) return;
+
+            Transform dragTransform = dragForces[player].DragTransform;
+            if (dragTransform == null) return;
+
+            rigidBody.AddForceAtPosition(direction * force, dragTransform.position, ForceMode.Impulse);
+        }
+
         private void ResetAngularDrag()
         {
             rigidBody.angularDrag = originalAngularDrag;

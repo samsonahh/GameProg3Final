@@ -17,8 +17,8 @@ namespace Samson
         [Header("Movement")]
         [SerializeField] private float baseSpeed = 2f;
         [SerializeField] private float rotationSpeed = 10f;
-        [Networked]
-        public float NetworkedSpeedModifier { get; private set; } = 1f;
+        [Networked] public float NetworkedSpeedModifier { get; private set; } = 1f;
+        [Networked] public Vector2 NetworkedMoveInput { get; private set; }
         public float MoveSpeed => baseSpeed * NetworkedSpeedModifier;
 
         [Header("Sprint")]
@@ -33,6 +33,11 @@ namespace Samson
         public Action OnGrounded = delegate { };
         public Action OnJump = delegate { };
         public Action OnFalling = delegate { };
+
+        [field: Header("Dance")]
+        public bool IsDancing { get; private set; }
+        private bool dancePressed;
+        public Action<bool> OnDance = delegate { };
 
         private void Awake()
         {
@@ -69,6 +74,7 @@ namespace Samson
 
             Vector3 moveInput = GetMoveInput();
             HandleSpeedModifier(moveInput, sprintPressed);
+            NetworkedMoveInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
             Vector3 moveAmount = GetMoveAmount(moveInput);
 
@@ -77,17 +83,30 @@ namespace Samson
 
             controller.Move(moveAmount + yVelocity * Runner.DeltaTime * Vector3.up);
 
-            HandleNetworkRotation(moveAmount);
+            HandleNetworkRotation();
+            HandleNetworkDance();
         }
 
         private void ReadInputs()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                jumpPressed = true;
+                dancePressed = true;
             }
 
-            sprintPressed = Input.GetKey(KeyCode.LeftShift);
+            if (!IsDancing)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    jumpPressed = true;
+                }
+
+                sprintPressed = Input.GetKey(KeyCode.LeftShift);
+            }
+            else
+            {
+                sprintPressed = false;
+            }
         }
 
         private Vector3 GetMoveInput()
@@ -121,18 +140,21 @@ namespace Samson
             jumpPressed = false;
         }
 
-        private void HandleNetworkRotation(Vector3 moveAmount)
+        private void HandleNetworkRotation()
         {
-            if (moveAmount != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(moveAmount, Vector3.up);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Runner.DeltaTime);
-            }
+            Quaternion targetRotation = Quaternion.Euler(0f, Camera.transform.eulerAngles.y, 0f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Runner.DeltaTime);
         }
 
         private void HandleSpeedModifier(Vector3 moveInput, bool sprintPressed)
         {
             if (!HasStateAuthority) return;
+
+            if (IsDancing)
+            {
+                NetworkedSpeedModifier = 0f;
+                return;
+            }
 
             if (moveInput == Vector3.zero)
             {
@@ -141,6 +163,16 @@ namespace Samson
             }
 
             NetworkedSpeedModifier = sprintPressed ? sprintModifier : 1f;
+        }
+
+        private void HandleNetworkDance()
+        {
+            if (dancePressed && controller.isGrounded)
+            {
+                IsDancing = !IsDancing;
+                OnDance.Invoke(IsDancing);
+            }
+            dancePressed = false;
         }
 
         private void SetLayerRecursively(GameObject obj, int newLayer)

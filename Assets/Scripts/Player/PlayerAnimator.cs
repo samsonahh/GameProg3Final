@@ -17,6 +17,8 @@ namespace Samson
         private readonly int DANCE_STATE = Animator.StringToHash("Dance");
 
         private const string MOVESPEED_PARAMETER = "MoveSpeed";
+        private const string MOVEX_PARAMETER = "MoveX";
+        private const string MOVEZ_PARAMETER = "MoveZ";
 
         [Header("Config")]
         [SerializeField] private float transitionDuration = 0.1f;
@@ -37,6 +39,7 @@ namespace Samson
             playerMovement.OnGrounded += PlayerMovement_OnGrounded;
             playerMovement.OnJump += PlayerMovement_OnJump;
             playerMovement.OnFalling += PlayerMovement_OnFalling;
+            playerMovement.OnDance += PlayerMovement_OnDance;
         }
 
         private void OnDestroy()
@@ -44,12 +47,16 @@ namespace Samson
             playerMovement.OnGrounded -= PlayerMovement_OnGrounded;
             playerMovement.OnJump -= PlayerMovement_OnJump;
             playerMovement.OnFalling -= PlayerMovement_OnFalling;
+            playerMovement.OnDance -= PlayerMovement_OnDance;
         }
 
         private void Update()
         {
             animatorMoveSpeed = Mathf.Lerp(animatorMoveSpeed, playerMovement.NetworkedSpeedModifier, animatorMoveSpeedLerpMultiplier * Time.deltaTime);
             animator.SetFloat(MOVESPEED_PARAMETER, animatorMoveSpeed);
+
+            animator.SetFloat(MOVEX_PARAMETER, playerMovement.NetworkedMoveInput.x);
+            animator.SetFloat(MOVEZ_PARAMETER, playerMovement.NetworkedMoveInput.y);
         }
 
         private void OnAnimationStateChanged()
@@ -60,6 +67,8 @@ namespace Samson
 
         private void PlayerMovement_OnGrounded()
         {
+            if (playerMovement.IsDancing) return;
+
             if(HasStateAuthority) networkedAnimationState = MOVEMENT_STATE;
         }
 
@@ -86,6 +95,11 @@ namespace Samson
         private void PlayerMovement_OnFalling()
         {
             if (HasStateAuthority) networkedAnimationState = FALL_STATE;
+        }
+
+        private void PlayerMovement_OnDance(bool isDancing)
+        {
+            if(HasStateAuthority) networkedAnimationState = isDancing ? DANCE_STATE : MOVEMENT_STATE;
         }
 
         private void PlayAnimationState(int stateHash)

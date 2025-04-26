@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +10,15 @@ namespace Samson
         public Transform Target { get; set; }
         [SerializeField] private float mouseSensitivity = 10f;
 
+        public float DefaultFOV { get; private set; }
+
         private float verticalRotation;
         private float horizontalRotation;
+
+        private void Awake()
+        {
+            DefaultFOV = Camera.main.fieldOfView;
+        }
 
         private void Update()
         {
@@ -42,6 +50,12 @@ namespace Samson
             horizontalRotation += mouseX * mouseSensitivity;
 
             transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
+        }
+
+        public void ChangeFOV(float targetFOV)
+        {
+            Camera.main.DOKill();
+            Camera.main.DOFieldOfView(targetFOV, 0.5f).SetEase(Ease.OutQuad);
         }
     }
 }

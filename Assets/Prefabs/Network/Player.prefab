@@ -85,12 +85,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modelObject: {fileID: 3566571346464658357}
+  headTransform: {fileID: 7807064607921118092}
   cameraTarget: {fileID: 5526710990988935658}
   baseSpeed: 3
   rotationSpeed: 10
   _NetworkedSpeedModifier: 1
   _NetworkedMoveInput: {x: 0, y: 0}
-  sprintModifier: 1.5
+  sprintModifier: 2
+  sprintFOV: 80
   jumpHeight: 2
 --- !u!114 &1337839757048805721
 MonoBehaviour:
@@ -120,13 +122,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragForce: 10
-  dragDamping: 1
-  dragBreakDistance: 5
-  draggedObjectAngularDrag: 2
+  dragDamping: 2
+  dragBreakDistance: 7
+  draggedObjectAngularDrag: 5
   dragMinDistance: 1
   dragMaxDistance: 5
   zoomSpeed: 10
-  shootForce: 25
+  shootForce: 15
   dragVisualPrefab: {fileID: 3276877055539761359, guid: 06ea3cda71b6e2c44b254c8a0d56eebe,
     type: 3}
 --- !u!114 &8133703474376625185
@@ -647,6 +649,12 @@ GameObject:
 --- !u!4 &4194207031024716047 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f1eeec9b1f7187a44805edbeec7e408d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4449108311464341220}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7807064607921118092 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -3321919801592875672, guid: f1eeec9b1f7187a44805edbeec7e408d,
     type: 3}
   m_PrefabInstance: {fileID: 4449108311464341220}
   m_PrefabAsset: {fileID: 0}

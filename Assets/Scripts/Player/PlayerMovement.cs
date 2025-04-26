@@ -1,5 +1,6 @@
 ﻿using Fusion;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Samson
@@ -9,10 +10,11 @@ namespace Samson
         private CharacterController controller;
 
         [SerializeField] private GameObject modelObject;
+        [SerializeField] private Transform headTransform;
 
         [Header("Camera")]
         [SerializeField] private Transform cameraTarget;
-        public Camera Camera { get; private set; }
+        public FirstPersonCamera FirstPersonCamera { get; private set; }
 
         [Header("Movement")]
         [SerializeField] private float baseSpeed = 2f;
@@ -23,6 +25,7 @@ namespace Samson
 
         [Header("Sprint")]
         [SerializeField] private float sprintModifier = 1.5f;
+        [SerializeField] private float sprintFOV = 75f;
         private bool sprintPressed;
 
         [Header("Jump")]
@@ -48,8 +51,8 @@ namespace Samson
         {
             if (HasStateAuthority)
             {
-                Camera = Camera.main;
-                Camera.GetComponent<FirstPersonCamera>().Target = cameraTarget;
+                FirstPersonCamera = Camera.main.GetComponent<FirstPersonCamera>();
+                FirstPersonCamera.Target = headTransform;
                 Cursor.lockState = CursorLockMode.Locked;
 
                 SetLayerRecursively(modelObject, LayerMask.NameToLayer("HideFromLocal"));
@@ -102,10 +105,12 @@ namespace Samson
                 }
 
                 sprintPressed = Input.GetKey(KeyCode.LeftShift);
+                FirstPersonCamera.ChangeFOV(sprintPressed ? sprintFOV : FirstPersonCamera.DefaultFOV);
             }
             else
             {
                 sprintPressed = false;
+                FirstPersonCamera.ChangeFOV(FirstPersonCamera.DefaultFOV);
             }
         }
 
@@ -118,7 +123,7 @@ namespace Samson
 
         private Vector3 GetMoveAmount(Vector3 moveInput)
         {
-            Quaternion cameraRotationY = Quaternion.Euler(0, Camera.transform.eulerAngles.y, 0);
+            Quaternion cameraRotationY = Quaternion.Euler(0, FirstPersonCamera.transform.eulerAngles.y, 0);
             
             return cameraRotationY * moveInput.normalized * Runner.DeltaTime * MoveSpeed;
         }
@@ -142,7 +147,7 @@ namespace Samson
 
         private void HandleNetworkRotation()
         {
-            Quaternion targetRotation = Quaternion.Euler(0f, Camera.transform.eulerAngles.y, 0f);
+            Quaternion targetRotation = Quaternion.Euler(0f, FirstPersonCamera.transform.eulerAngles.y, 0f);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Runner.DeltaTime);
         }
 

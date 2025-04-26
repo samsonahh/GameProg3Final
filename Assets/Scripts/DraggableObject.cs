@@ -18,12 +18,14 @@ namespace Samson
             public Transform DragTransform { get; private set; }
             public float Force { get; private set; }
             public float Damping { get; private set; }
-            public DragData(Vector3 targetPosition, Transform dragTransform, float force, float damping)
+            public float Timestamp { get; private set; }
+            public DragData(Vector3 targetPosition, Transform dragTransform, float force, float damping, float timestamp)
             {
                 TargetPosition = targetPosition;
                 DragTransform = dragTransform;
                 Force = force;
                 Damping = damping;
+                Timestamp = timestamp;
             }
         }
 
@@ -52,6 +54,13 @@ namespace Samson
                 Transform dragTransform = dragForce.Value.DragTransform;
                 float force = dragForce.Value.Force;
                 float damp = dragForce.Value.Damping;
+                float timeStamp = dragForce.Value.Timestamp;
+
+                if(Runner.SimulationTime - timeStamp > 10f)
+                {
+                    dragForces.Remove(player);
+                    continue;
+                }
 
                 if (dragTransform == null)
                 {
@@ -65,12 +74,11 @@ namespace Samson
 
                 Vector3 pointVelocity = rigidBody.GetPointVelocity(dragTransform.position);
                 rigidBody.AddForceAtPosition(-pointVelocity * damp, dragTransform.position, ForceMode.Acceleration);
-
             }
         }
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void AddDragSourceRpc(PlayerRef player, Vector3 targetPosition, Vector3 dragStartPosition, float dragForce, float dragDamping, float angularDrag)
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        public void AddDragSourceRpc(PlayerRef player, Vector3 targetPosition, Vector3 dragStartPosition, float dragForce, float dragDamping, float angularDrag, float timeStamp)
         {
             rigidBody.useGravity = false;
             rigidBody.angularDrag = angularDrag;
@@ -87,26 +95,26 @@ namespace Samson
                     Destroy(existingTransform.gameObject);
                 }
 
-                dragForces[player] = new DragData(targetPosition, dragTransform, dragForce, dragDamping);
+                dragForces[player] = new DragData(targetPosition, dragTransform, dragForce, dragDamping, timeStamp);
             }
             else
             {
-                dragForces.Add(player, new DragData(targetPosition, dragTransform, dragForce, dragDamping));
+                dragForces.Add(player, new DragData(targetPosition, dragTransform, dragForce, dragDamping, timeStamp));
             }
         }
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void UpdateDragSourceRpc(PlayerRef player, Vector3 targetPosition)
+        [Rpc(RpcSources.All, RpcTargets.All)]
+        public void UpdateDragSourceRpc(PlayerRef player, Vector3 targetPosition, float timeStamp)
         {
             if (!dragForces.ContainsKey(player))
             {
                 return;
             }
 
-            dragForces[player] = new DragData(targetPosition, dragForces[player].DragTransform, dragForces[player].Force, dragForces[player].Damping);
+            dragForces[player] = new DragData(targetPosition, dragForces[player].DragTransform, dragForces[player].Force, dragForces[player].Damping, timeStamp);
         }
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        [Rpc(RpcSources.All, RpcTargets.All)]
         public void RemoveDragSourceRpc(PlayerRef player)
         {
             if(dragForces.ContainsKey(player))
@@ -126,7 +134,7 @@ namespace Samson
             }
         }
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        [Rpc(RpcSources.All, RpcTargets.All)]
         public void LaunchRpc(PlayerRef player, Vector3 direction, float force)
         {
             if (!dragForces.ContainsKey(player)) return;

@@ -16,7 +16,8 @@ namespace Samson
         private float dragCurrentDistance;
 
         private Ray ray;
-        private DraggableObject currentDragObject;
+        [Networked]
+        private DraggableObject currentDragObject { get; set; }
 
         [Header("Shoot")]
         [SerializeField] private float shootForce = 25f;
@@ -30,12 +31,12 @@ namespace Samson
 
         private void Update()
         {
+            VisualizeDrag();
             if (!HasStateAuthority) return;
 
             HandleDragInput();
             HandleDragZoom();
             HandleShootInput();
-            VisualizeDrag();
         }
 
         private void HandleShootInput()

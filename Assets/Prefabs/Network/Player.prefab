@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccf90208c425ce146a1c539aeb37ff80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerUIPrefab: {fileID: 5964427988511915136, guid: 10defa30f8fbfbd4886a14dc79950250,
+  playerUIPrefab: {fileID: 8901747770971756403, guid: 10defa30f8fbfbd4886a14dc79950250,
     type: 3}
 --- !u!114 &3928257158043229628
 MonoBehaviour:
@@ -429,6 +429,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -1781356600409242780, guid: f1eeec9b1f7187a44805edbeec7e408d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -1703473491307067327, guid: f1eeec9b1f7187a44805edbeec7e408d,
         type: 3}

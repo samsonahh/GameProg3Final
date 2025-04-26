@@ -7,14 +7,15 @@ namespace Samson
 {
     public class PlayerUISpawner : NetworkBehaviour
     {
-        [SerializeField] private GameObject playerUIPrefab;
+        [SerializeField] private PlayerUI playerUIPrefab;
 
         public override void Spawned()
         {
             if (!HasStateAuthority) return;
 
             Transform mainCanvasTransform = GameObject.FindGameObjectWithTag("MainCanvas").transform;
-            Instantiate(playerUIPrefab, mainCanvasTransform);
+            PlayerUI playerUI = Instantiate(playerUIPrefab, mainCanvasTransform);
+            playerUI.Init(Runner);
         }
     }
 }

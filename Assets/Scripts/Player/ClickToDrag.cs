@@ -31,12 +31,15 @@ namespace Samson
 
         private void Update()
         {
-            VisualizeDrag();
             if (!HasStateAuthority) return;
 
             HandleDragInput();
             HandleDragZoom();
             HandleShootInput();
+            VisualizeDrag();
+
+            // New
+
         }
 
         private void HandleShootInput()
@@ -212,6 +215,5 @@ namespace Samson
 
             return lineRenderer;
         }
-
     }
 }

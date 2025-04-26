@@ -11,6 +11,8 @@ namespace Samson
         private NetworkRunner networkRunner;
 
         [SerializeField] private TMP_Text pingText;
+        private float pingUpdateTimer = 0f;
+        private const float pingUpdateInterval = 1f; // seconds
 
         public void Init(NetworkRunner networkRunner)
         {
@@ -24,10 +26,14 @@ namespace Samson
 
         private void UpdatePingText()
         {
-            if (networkRunner == null) return;
+            pingUpdateTimer += Time.deltaTime;
 
-            double pingMs = networkRunner.GetPlayerRtt(PlayerRef.None) * 1000f;
-            pingText.text = $"{pingMs:F0} ms";
+            if (pingUpdateTimer >= pingUpdateInterval)
+            {
+                pingUpdateTimer = 0f;
+                double pingMs = networkRunner.GetPlayerRtt(PlayerRef.None) * 1000f;
+                pingText.text = $"{pingMs:F0} ms";
+            }
         }
     }
 }

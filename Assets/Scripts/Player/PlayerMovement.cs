@@ -10,10 +10,9 @@ namespace Samson
         private CharacterController controller;
 
         [SerializeField] private GameObject modelObject;
-        [SerializeField] private Transform headTransform;
 
         [Header("Camera")]
-        [SerializeField] private Transform cameraTarget;
+        [SerializeField] private Transform headTransform;
         public FirstPersonCamera FirstPersonCamera { get; private set; }
 
         [Header("Movement")]
@@ -52,8 +51,7 @@ namespace Samson
             if (HasStateAuthority)
             {
                 FirstPersonCamera = Camera.main.GetComponent<FirstPersonCamera>();
-                FirstPersonCamera.Target = headTransform;
-                Cursor.lockState = CursorLockMode.Locked;
+                FirstPersonCamera.AssignPlayerTarget(headTransform);
 
                 SetLayerRecursively(modelObject, LayerMask.NameToLayer("HideFromLocal"));
             }

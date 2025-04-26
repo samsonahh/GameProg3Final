@@ -10,148 +10,79 @@ namespace Samson
     {
         private Rigidbody rigidBody;
 
-        private float originalAngularDrag;
+        private Dictionary<PlayerRef, PlayerDragData> draggers = new();
 
-        public class DragData
-        {
-            public Vector3 TargetPosition { get; private set; }
-            public Transform DragTransform { get; private set; }
-            public float Force { get; private set; }
-            public float Damping { get; private set; }
-            public float Timestamp { get; private set; }
-            public DragData(Vector3 targetPosition, Transform dragTransform, float force, float damping, float timestamp)
-            {
-                TargetPosition = targetPosition;
-                DragTransform = dragTransform;
-                Force = force;
-                Damping = damping;
-                Timestamp = timestamp;
-            }
-        }
+        [SerializeField] private float dragMaxForce = 25f;
+        [SerializeField] private float dragIdleExpireTime = 5f;
 
-        private Dictionary<PlayerRef, DragData> dragForces = new();
-
-        private void Awake()
+        public override void Spawned()
         {
             rigidBody = GetComponent<Rigidbody>();
-
-            originalAngularDrag = rigidBody.angularDrag;
         }
 
         public override void FixedUpdateNetwork()
         {
-            ApplyNetworkedDragForces();
-        }
+            if(!HasStateAuthority) return;
 
-        private void ApplyNetworkedDragForces()
-        {
-            if (!HasStateAuthority) return;
+            if (draggers.Count <= 0) return;
 
-            foreach(var dragForce in new Dictionary<PlayerRef, DragData>(dragForces))
+            foreach(var dragger in new Dictionary<PlayerRef, PlayerDragData>(draggers))
             {
-                PlayerRef player = dragForce.Key;
-                Vector3 targetPosition = dragForce.Value.TargetPosition;
-                Transform dragTransform = dragForce.Value.DragTransform;
-                float force = dragForce.Value.Force;
-                float damp = dragForce.Value.Damping;
-                float timeStamp = dragForce.Value.Timestamp;
+                PlayerDragData dragData = dragger.Value;
 
-                if(Runner.SimulationTime - timeStamp > 10f)
+                // Check if the dragger is still valid
+                if(Runner.SimulationTime - dragData.TimeStamp > dragIdleExpireTime)
                 {
-                    dragForces.Remove(player);
+                    draggers.Remove(dragger.Key);
                     continue;
                 }
+                Vector3 worldDragPoint = transform.TransformPoint(dragData.LocalDragPoint);
+                Vector3 forceDirection = dragData.TargetPosition - rigidBody.position;
 
-                if (dragTransform == null)
-                {
-                    dragForces.Remove(player);
-                    continue;
-                }
+                Vector3 springForce = forceDirection * dragData.Force;
+                Vector3 dampForce = -rigidBody.GetPointVelocity(worldDragPoint) * dragData.Damping;
 
-                Vector3 dragDirection = targetPosition - dragTransform.position;
+                Vector3 finalForce = springForce + dampForce;
 
-                rigidBody.AddForceAtPosition(dragDirection * force, dragTransform.position, ForceMode.Acceleration);
-
-                Vector3 pointVelocity = rigidBody.GetPointVelocity(dragTransform.position);
-                rigidBody.AddForceAtPosition(-pointVelocity * damp, dragTransform.position, ForceMode.Acceleration);
+                if(finalForce.magnitude > dragMaxForce) finalForce = finalForce.normalized * dragMaxForce;
+                 
+                rigidBody.AddForceAtPosition(finalForce, worldDragPoint, ForceMode.Force);
             }
         }
 
-        [Rpc(RpcSources.All, RpcTargets.All)]
-        public void AddDragSourceRpc(PlayerRef player, Vector3 targetPosition, Vector3 dragStartPosition, float dragForce, float dragDamping, float angularDrag, float timeStamp)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void StartDraggingRpc(PlayerRef player, PlayerDragData dragData)
         {
+            if (draggers.ContainsKey(player)) return;
+
+            draggers.Add(player, dragData);
             rigidBody.useGravity = false;
-            rigidBody.angularDrag = angularDrag;
-
-            Transform dragTransform = new GameObject("DragTransform").transform;
-            dragTransform.position = dragStartPosition;
-            dragTransform.SetParent(transform);
-
-            if (dragForces.ContainsKey(player))
-            {
-                Transform existingTransform = dragForces[player].DragTransform;
-                if(existingTransform != null)
-                {
-                    Destroy(existingTransform.gameObject);
-                }
-
-                dragForces[player] = new DragData(targetPosition, dragTransform, dragForce, dragDamping, timeStamp);
-            }
-            else
-            {
-                dragForces.Add(player, new DragData(targetPosition, dragTransform, dragForce, dragDamping, timeStamp));
-            }
         }
 
-        [Rpc(RpcSources.All, RpcTargets.All)]
-        public void UpdateDragSourceRpc(PlayerRef player, Vector3 targetPosition, float timeStamp)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void UpdateDraggingRpc(PlayerRef player, PlayerDragData dragData)
         {
-            if (!dragForces.ContainsKey(player))
-            {
-                return;
-            }
+            if(!draggers.ContainsKey(player)) return;
 
-            dragForces[player] = new DragData(targetPosition, dragForces[player].DragTransform, dragForces[player].Force, dragForces[player].Damping, timeStamp);
+            draggers[player] = dragData;
         }
 
-        [Rpc(RpcSources.All, RpcTargets.All)]
-        public void RemoveDragSourceRpc(PlayerRef player)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void StopDraggingRpc(PlayerRef player)
         {
-            if(dragForces.ContainsKey(player))
-            {
-                Transform existingTransform = dragForces[player].DragTransform;
-                if(existingTransform != null)
-                {
-                    Destroy(existingTransform.gameObject);
-                }
-                dragForces.Remove(player);
-            }
+            draggers.Remove(player);
 
-            if(dragForces.Count == 0)
+            if (draggers.Count == 0)
             {
                 rigidBody.useGravity = true;
-                ResetAngularDrag();
             }
         }
 
-        [Rpc(RpcSources.All, RpcTargets.All)]
-        public void LaunchRpc(PlayerRef player, Vector3 direction, float force)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        public void LaunchRpc(PlayerRef player, Vector3 direction, float launchForce)
         {
-            if (!dragForces.ContainsKey(player)) return;
-
-            rigidBody.AddForce(direction * force, ForceMode.Impulse);
-        }
-
-        private void ResetAngularDrag()
-        {
-            rigidBody.angularDrag = originalAngularDrag;
-        }
-
-        public Transform GetDragTransform(PlayerRef player)
-        {
-            if (!dragForces.ContainsKey(player)) return null;
-
-            return dragForces[player].DragTransform;
+            StopDraggingRpc(player);
+            rigidBody.AddForce(direction.normalized * launchForce, ForceMode.Impulse);
         }
     }
 }

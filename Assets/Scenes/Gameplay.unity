@@ -667,6 +667,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7182e40dc79b142be0b9ccd9d883cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dragMaxForce: 25
+  dragIdleExpireTime: 5
 --- !u!4 &743210800
 Transform:
   m_ObjectHideFlags: 0
@@ -1762,6 +1764,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7182e40dc79b142be0b9ccd9d883cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dragMaxForce: 25
+  dragIdleExpireTime: 5
 --- !u!4 &1675595208
 Transform:
   m_ObjectHideFlags: 0
@@ -1962,6 +1966,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7182e40dc79b142be0b9ccd9d883cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dragMaxForce: 25
+  dragIdleExpireTime: 5
 --- !u!1 &1958423877
 GameObject:
   m_ObjectHideFlags: 0
@@ -2132,6 +2138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7182e40dc79b142be0b9ccd9d883cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dragMaxForce: 25
+  dragIdleExpireTime: 5
 --- !u!4 &1958423885
 Transform:
   m_ObjectHideFlags: 0
@@ -2317,6 +2325,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7182e40dc79b142be0b9ccd9d883cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dragMaxForce: 25
+  dragIdleExpireTime: 5
 --- !u!4 &1958428340
 Transform:
   m_ObjectHideFlags: 0

@@ -94,6 +94,8 @@ namespace Samson
 
         private void PlayerMovement_OnFalling()
         {
+            if (networkedAnimationState == DANCE_STATE) return;
+
             if (HasStateAuthority) networkedAnimationState = FALL_STATE;
         }
 

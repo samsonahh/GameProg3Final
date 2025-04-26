@@ -38,9 +38,12 @@ namespace Samson
         private void LateUpdate()
         {
             if (Target == null) return;
-
             transform.position = Target.position;
 
+            if (PlayerUI.Instance != null)
+            {
+                if(PlayerUI.Instance.IsMenuOpen) return;
+            }
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
 
@@ -50,6 +53,11 @@ namespace Samson
             horizontalRotation += mouseX * mouseSensitivity;
 
             transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
+        }
+
+        public void AssignPlayerTarget(Transform target)
+        {
+            Target = target;
         }
 
         public void ChangeFOV(float targetFOV)

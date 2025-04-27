@@ -9,13 +9,15 @@ namespace Samson
 {
     public class PlayerSpawner : SimulationBehaviour, IPlayerJoined
     {
-        [SerializeField] private GameObject playerPrefab;
+        [SerializeField] private NetworkPrefabRef playerPrefab;
 
         public void PlayerJoined(PlayerRef player)
         {
             if (player == Runner.LocalPlayer)
             {
-                Runner.Spawn(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity);
+                NetworkObject playerSpawned = Runner.Spawn(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity, player);
+                Runner.SetPlayerObject(player, playerSpawned);
+                Debug.Log($"Spawned player prefab for {player}. Player spawned is null: {playerSpawned == null}");
             }
         }
     }

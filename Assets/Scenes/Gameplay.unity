@@ -203,11 +203,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 330585546}
+  - component: {fileID: 330585549}
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
-  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ce3bc23690ee994f81edfe63da6f9e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 10
+  mouseSensitivity: 4
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,6 +669,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
+  _Draggers: []
 --- !u!4 &743210800
 Transform:
   m_ObjectHideFlags: 0
@@ -1390,8 +1391,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c177f4b065060ec428854d7f6ce55b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 7110019169024637138, guid: a0fe252b4073a7e4da8b27189ae87d3f,
-    type: 3}
+  playerPrefab:
+    RawGuidValue: a0fe252b4073a7e4da8b27189ae87d3f
 --- !u!114 &1397804887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1766,6 +1767,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
+  _Draggers: []
 --- !u!4 &1675595208
 Transform:
   m_ObjectHideFlags: 0
@@ -1968,6 +1970,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
+  _Draggers: []
 --- !u!1 &1958423877
 GameObject:
   m_ObjectHideFlags: 0
@@ -2140,6 +2143,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
+  _Draggers: []
 --- !u!4 &1958423885
 Transform:
   m_ObjectHideFlags: 0
@@ -2327,6 +2331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
+  _Draggers: []
 --- !u!4 &1958428340
 Transform:
   m_ObjectHideFlags: 0

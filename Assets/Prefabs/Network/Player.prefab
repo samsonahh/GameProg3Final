@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: -710015332866956217}
   - component: {fileID: 1337839757048805721}
   - component: {fileID: 7973798135634979079}
+  - component: {fileID: 4405982433510183290}
   - component: {fileID: 8133703474376625185}
   - component: {fileID: 3928257158043229628}
   - component: {fileID: -8494884843628743421}
@@ -120,16 +121,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75a38e29dcd005c4884313794d7115ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragForce: 10
-  dragDamping: 2
-  dragBreakDistance: 7
-  draggedObjectAngularDrag: 5
+  dragForce: 15
+  dragDamping: 2.5
+  dragBreakDistance: 10
   dragMinDistance: 1
   dragMaxDistance: 5
   zoomSpeed: 0.25
+  _IsDragging:
+    _value: 0
+  shootForce: 15
+--- !u!114 &4405982433510183290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7110019169024637138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f6961e4e533e1d4c979198612204b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   dragSphereVisualizerPrefab: {fileID: 3276877055539761359, guid: 06ea3cda71b6e2c44b254c8a0d56eebe,
     type: 3}
-  shootForce: 15
 --- !u!114 &8133703474376625185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +178,7 @@ MonoBehaviour:
   - {fileID: -710015332866956217}
   - {fileID: 1337839757048805721}
   - {fileID: 7973798135634979079}
+  - {fileID: 4405982433510183290}
   - {fileID: 8133703474376625185}
   - {fileID: -8494884843628743421}
   ForceRemoteRenderTimeframe: 0

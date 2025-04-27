@@ -103,12 +103,12 @@ namespace Samson
                 }
 
                 sprintPressed = Input.GetKey(KeyCode.LeftShift);
-                FirstPersonCamera.ChangeFOV(sprintPressed ? sprintFOV : FirstPersonCamera.DefaultFOV);
+                if(FirstPersonCamera != null) FirstPersonCamera.ChangeFOV(sprintPressed ? sprintFOV : FirstPersonCamera.DefaultFOV);
             }
             else
             {
                 sprintPressed = false;
-                FirstPersonCamera.ChangeFOV(FirstPersonCamera.DefaultFOV);
+                if (FirstPersonCamera != null) FirstPersonCamera.ChangeFOV(FirstPersonCamera.DefaultFOV);
             }
         }
 

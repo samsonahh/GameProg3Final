@@ -10,7 +10,8 @@ namespace Samson
     {
         private Rigidbody rigidBody;
 
-        private Dictionary<PlayerRef, PlayerDragData> draggers = new();
+        [Networked, Capacity(20)] // Up to 20 draggers
+        public NetworkDictionary<PlayerRef, PlayerObjectDragger> Draggers => default;
 
         [SerializeField] private float dragMaxForce = 25f;
         [SerializeField] private float dragIdleExpireTime = 5f;
@@ -23,19 +24,36 @@ namespace Samson
         public override void FixedUpdateNetwork()
         {
             if(!HasStateAuthority) return;
-
-            if (draggers.Count <= 0) return;
-
-            foreach(var dragger in new Dictionary<PlayerRef, PlayerDragData>(draggers))
+            if (Draggers.Count <= 0)
             {
-                PlayerDragData dragData = dragger.Value;
+                rigidBody.useGravity = true;
+                return;
+            }
+
+            foreach(var keyValue in new Dictionary<PlayerRef, PlayerObjectDragger>(Draggers))
+            {
+                PlayerRef draggerPlayerRef = keyValue.Key;
+                PlayerObjectDragger playerObjectDragger = keyValue.Value;
+
+                Debug.Log($"DraggableObject processing dragger {draggerPlayerRef}");
+                if(playerObjectDragger == null || !playerObjectDragger.IsDragging)
+                {
+                    Debug.LogWarning($"Dragger player {draggerPlayerRef} doesn't have object dragger or is not dragging.");
+                    Draggers.Remove(draggerPlayerRef);
+                    continue;
+                }
+
+                PlayerDragData dragData = playerObjectDragger.CurrentDragData;
 
                 // Check if the dragger is still valid
                 if(Runner.SimulationTime - dragData.TimeStamp > dragIdleExpireTime)
                 {
-                    draggers.Remove(dragger.Key);
+                    Debug.LogWarning($"Dragger {draggerPlayerRef} player timed out.");
+                    Draggers.Remove(draggerPlayerRef);
                     continue;
                 }
+
+                Debug.Log($"Applying player {draggerPlayerRef}'s drag with data: {dragData}");
                 Vector3 worldDragPoint = transform.TransformPoint(dragData.LocalDragPoint);
                 Vector3 forceDirection = dragData.TargetPosition - rigidBody.position;
 
@@ -51,37 +69,34 @@ namespace Samson
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void StartDraggingRpc(PlayerRef player, PlayerDragData dragData)
+        public void StartDraggingRpc(PlayerRef player)
         {
-            if (draggers.ContainsKey(player)) return;
+            if (Draggers.ContainsKey(player)) return;
 
-            draggers.Add(player, dragData);
-            rigidBody.useGravity = false;
-        }
+            Debug.Log($"Attempting to add player {player} to draggers list");
 
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void UpdateDraggingRpc(PlayerRef player, PlayerDragData dragData)
-        {
-            if(!draggers.ContainsKey(player)) return;
-
-            draggers[player] = dragData;
-        }
-
-        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-        public void StopDraggingRpc(PlayerRef player)
-        {
-            draggers.Remove(player);
-
-            if (draggers.Count == 0)
+            NetworkObject playerObject = Runner.GetPlayerObject(player);
+            if (playerObject == null)
             {
-                rigidBody.useGravity = true;
+                Debug.LogWarning($"Dragger player {player} doesn't exist.");
+                return;
             }
+
+            PlayerObjectDragger playerObjectDragger = playerObject.GetComponent<PlayerObjectDragger>();
+            if (playerObjectDragger == null)
+            {
+                Debug.LogWarning($"Dragger player {player} doesn't have object dragger.");
+                return;
+            }
+
+            Draggers.Add(player, playerObjectDragger);
+            rigidBody.useGravity = false;
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
         public void LaunchRpc(PlayerRef player, Vector3 direction, float launchForce)
         {
-            StopDraggingRpc(player);
+            if(Draggers.ContainsKey(player)) Draggers.Remove(player); // Remove the player from the draggers list
             rigidBody.AddForce(direction.normalized * launchForce, ForceMode.Impulse);
         }
     }

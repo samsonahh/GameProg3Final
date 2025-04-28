@@ -9,7 +9,6 @@ namespace Samson
     public class PlayerDragVisualizer : NetworkBehaviour
     {
         private PlayerObjectDragger objectDragger;
-        private NetworkObject networkObject;
 
         [Header("Drag Visual Config")]
         [SerializeField] private GameObject dragSphereVisualizerPrefab;
@@ -29,7 +28,6 @@ namespace Samson
         private void Awake()
         {
             objectDragger = GetComponent<PlayerObjectDragger>();
-            networkObject = GetComponent<NetworkObject>();
 
             objectDragger.OnDragStart += ObjectDragger_OnDragStart;
             objectDragger.OnDragEnd += ObjectDragger_OnDragEnd;
@@ -54,9 +52,9 @@ namespace Samson
             if(!objectDragger.IsDragging) return;
 
             PlayerDragData dragData = objectDragger.CurrentDragData;
-            if(!draggers.TryGetValue(networkObject.InputAuthority, out DragVisualData dragVisualData)) return;
+            if(!draggers.TryGetValue(Object.InputAuthority, out DragVisualData dragVisualData)) return;
             
-            if (Runner.LocalPlayer != networkObject.InputAuthority)
+            if (Runner.LocalPlayer != Object.InputAuthority)
             {
                 dragVisualData.AimVisual.transform.position = Vector3.Lerp(dragVisualData.AimVisual.transform.position, dragData.TargetPosition, nonLocalLerpSpeed * Time.deltaTime);
 

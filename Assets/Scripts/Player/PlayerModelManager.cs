@@ -33,20 +33,32 @@ namespace Samson
         {
             if (HasStateAuthority)
             {
-                ChangeModel(Model.YBOT, true);
+                ChangeModelLocal(Model.YBOT, true);
+            }
+            else
+            {
+                // Proxy side needs to build the correct model too
+                ChangeModelLocal(CurrentModel, true);
             }
         }
 
         public void ChangeModel(Model newModel, bool force = false)
         {
+            if (!HasStateAuthority) return;
             if (CurrentModel == newModel && !force) return;
 
             CurrentModel = newModel;
+        }
 
-            Destroy(CurrentModelObject.gameObject);
+        private void ChangeModelLocal(Model newModel, bool force = false)
+        {
+            if (CurrentModelObject != null)
+            {
+                Destroy(CurrentModelObject.gameObject);
+            }
+
             CurrentModelObject = Instantiate(models[newModel], transform.position, transform.rotation, transform);
-
-            CurrentModelObject.HideFromLocal();
+            if(Object.InputAuthority == Runner.LocalPlayer) CurrentModelObject.HideFromLocal();
 
             StartCoroutine(DelayedAnimatorRebind());
         }
@@ -72,7 +84,7 @@ namespace Samson
 
         private void OnModelChanged()
         {
-            ChangeModel(CurrentModel);
+            ChangeModelLocal(CurrentModel);
         }
     }
 }

@@ -47,6 +47,8 @@ namespace Samson
 
         private void Update()
         {
+            if (!HasStateAuthority) return;
+
             AssignAimRay();
 
             ReadDragInput();

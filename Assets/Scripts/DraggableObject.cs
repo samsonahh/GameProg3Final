@@ -35,7 +35,6 @@ namespace Samson
                 PlayerRef draggerPlayerRef = keyValue.Key;
                 PlayerObjectDragger playerObjectDragger = keyValue.Value;
 
-                Debug.Log($"DraggableObject processing dragger {draggerPlayerRef}");
                 if(playerObjectDragger == null || !playerObjectDragger.IsDragging)
                 {
                     Debug.LogWarning($"Dragger player {draggerPlayerRef} doesn't have object dragger or is not dragging.");
@@ -53,7 +52,6 @@ namespace Samson
                     continue;
                 }
 
-                Debug.Log($"Applying player {draggerPlayerRef}'s drag with data: {dragData}");
                 Vector3 worldDragPoint = transform.TransformPoint(dragData.LocalDragPoint);
                 Vector3 forceDirection = dragData.TargetPosition - rigidBody.position;
 
@@ -72,8 +70,6 @@ namespace Samson
         public void StartDraggingRpc(PlayerRef player)
         {
             if (Draggers.ContainsKey(player)) return;
-
-            Debug.Log($"Attempting to add player {player} to draggers list");
 
             NetworkObject playerObject = Runner.GetPlayerObject(player);
             if (playerObject == null)

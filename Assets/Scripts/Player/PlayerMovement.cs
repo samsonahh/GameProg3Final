@@ -9,8 +9,6 @@ namespace Samson
     {
         private CharacterController controller;
 
-        [SerializeField] private GameObject modelObject;
-
         [Header("Camera")]
         [SerializeField] private Transform headTransform;
         public FirstPersonCamera FirstPersonCamera { get; private set; }
@@ -51,9 +49,7 @@ namespace Samson
             if (HasStateAuthority)
             {
                 FirstPersonCamera = Camera.main.GetComponent<FirstPersonCamera>();
-                FirstPersonCamera.AssignPlayerTarget(headTransform);
-
-                SetLayerRecursively(modelObject, LayerMask.NameToLayer("HideFromLocal"));
+                FirstPersonCamera.AssignPlayerTarget(GetComponent<PlayerModelManager>());
             }
         }
 
@@ -176,15 +172,6 @@ namespace Samson
                 OnDance.Invoke(IsDancing);
             }
             dancePressed = false;
-        }
-
-        private void SetLayerRecursively(GameObject obj, int newLayer)
-        {
-            obj.layer = newLayer;
-            foreach (Transform child in obj.transform)
-            {
-                SetLayerRecursively(child.gameObject, newLayer);
-            }
         }
     }
 }

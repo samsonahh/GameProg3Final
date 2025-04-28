@@ -669,7 +669,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
-  _Draggers: []
+  _Draggers:
+    _items: []
 --- !u!4 &743210800
 Transform:
   m_ObjectHideFlags: 0
@@ -1767,7 +1768,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
-  _Draggers: []
+  _Draggers:
+    _items: []
 --- !u!4 &1675595208
 Transform:
   m_ObjectHideFlags: 0
@@ -1970,7 +1972,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
-  _Draggers: []
+  _Draggers:
+    _items: []
 --- !u!1 &1958423877
 GameObject:
   m_ObjectHideFlags: 0
@@ -2143,7 +2146,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
-  _Draggers: []
+  _Draggers:
+    _items: []
 --- !u!4 &1958423885
 Transform:
   m_ObjectHideFlags: 0
@@ -2331,7 +2335,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dragMaxForce: 25
   dragIdleExpireTime: 5
-  _Draggers: []
+  _Draggers:
+    _items: []
 --- !u!4 &1958428340
 Transform:
   m_ObjectHideFlags: 0

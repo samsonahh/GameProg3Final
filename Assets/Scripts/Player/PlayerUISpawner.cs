@@ -13,7 +13,7 @@ namespace Samson
 
             Transform mainCanvasTransform = GameObject.FindGameObjectWithTag("MainCanvas").transform;
             PlayerUI playerUI = Instantiate(playerUIPrefab, mainCanvasTransform);
-            playerUI.Init(Runner);
+            playerUI.Init(Runner, gameObject);
         }
     }
 }

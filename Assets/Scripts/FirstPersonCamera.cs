@@ -7,7 +7,7 @@ namespace Samson
 {
     public class FirstPersonCamera : MonoBehaviour
     {
-        public Transform Target { get; set; }
+        private PlayerModelManager playerModelManager;
         [SerializeField] private float mouseSensitivity = 10f;
 
         public float DefaultFOV { get; private set; }
@@ -22,23 +22,13 @@ namespace Samson
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Plus))
-            {
-                mouseSensitivity += 0.25f;
-            }
-
-            if(Input.GetKeyDown(KeyCode.Minus))
-            {
-                mouseSensitivity -= 0.25f;
-            }
-
-            mouseSensitivity = Mathf.Clamp(mouseSensitivity, 1f, 100f);
+            
         }
 
         private void LateUpdate()
         {
-            if (Target == null) return;
-            transform.position = Target.position;
+            if (playerModelManager == null) return;
+            transform.position = playerModelManager.CurrentModelObject.HeadTransform.position;
 
             if (PlayerUI.Instance != null)
             {
@@ -55,15 +45,20 @@ namespace Samson
             transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
         }
 
-        public void AssignPlayerTarget(Transform target)
+        public void AssignPlayerTarget(PlayerModelManager modelManager)
         {
-            Target = target;
+            playerModelManager = modelManager;
         }
 
         public void ChangeFOV(float targetFOV)
         {
             Camera.main.DOKill();
             Camera.main.DOFieldOfView(targetFOV, 0.5f).SetEase(Ease.OutQuad);
+        }
+
+        public void ChangeMouseSensitivity(float newSensitivity)
+        {
+            mouseSensitivity = newSensitivity;
         }
     }
 }

@@ -1,8 +1,12 @@
 using Fusion;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using static Samson.PlayerModelManager;
 
 namespace Samson
 {
@@ -11,6 +15,10 @@ namespace Samson
         public static PlayerUI Instance { get; private set; }
 
         private NetworkRunner networkRunner;
+        private GameObject playerObject;
+        
+        private FirstPersonCamera firstPersonCamera;
+        private PlayerModelManager playerModelManager;
 
         [Header("Ping")]
         [SerializeField] private TMP_Text pingText;
@@ -20,9 +28,12 @@ namespace Samson
         [Header("Menu")]
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject gameplayPanel;
+        [SerializeField] private Slider sensitivitySlider;
+        [SerializeField] private TMP_Text sensitivityText;
+        [SerializeField] private TMP_Dropdown modelDropdown;
         public bool IsMenuOpen { get; private set; } = false;
 
-        public void Init(NetworkRunner networkRunner)
+        public void Init(NetworkRunner networkRunner, GameObject playerObject)
         {
             if(Instance != null)
             {
@@ -31,8 +42,13 @@ namespace Samson
             Instance = this;
 
             this.networkRunner = networkRunner;
+            this.playerObject = playerObject;
+            firstPersonCamera = Camera.main.GetComponent<FirstPersonCamera>();
+            playerModelManager = playerObject.GetComponent<PlayerModelManager>();
 
             OpenMenu(false);
+
+            SetupModelsDropdown();
         }
 
         private void Update()
@@ -40,6 +56,7 @@ namespace Samson
             UpdatePingText();
 
             ReadMenuInput();
+            ReadMouseSensitivitySlider();
         }
 
         private void UpdatePingText()
@@ -95,6 +112,30 @@ namespace Samson
         public void OnCloseButtonClicked()
         {
             OpenMenu(false);
+        }
+
+        private void ReadMouseSensitivitySlider()
+        {
+            float sliderValue = sensitivitySlider.value;
+            firstPersonCamera.ChangeMouseSensitivity(sliderValue);
+
+            sensitivityText.text = $"{sliderValue:F2}";
+        }
+
+        private void SetupModelsDropdown()
+        {
+            modelDropdown.ClearOptions();
+
+            var options = Enum.GetNames(typeof(PlayerModelManager.Model)).ToList();
+            modelDropdown.AddOptions(options);
+
+            modelDropdown.onValueChanged.AddListener(OnModelSelected);
+        }
+
+        private void OnModelSelected(int option)
+        {
+            Model selectedModel = (Model)option;
+            playerModelManager.ChangeModel(selectedModel);
         }
     }
 }

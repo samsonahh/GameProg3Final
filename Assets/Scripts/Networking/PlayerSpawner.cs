@@ -17,7 +17,6 @@ namespace Samson
             {
                 NetworkObject playerSpawned = Runner.Spawn(playerPrefab, new Vector3(0, 1, 0), Quaternion.identity, player);
                 Runner.SetPlayerObject(player, playerSpawned);
-                playerSpawned.name = $"Player {player.PlayerId}";
             }
         }
     }

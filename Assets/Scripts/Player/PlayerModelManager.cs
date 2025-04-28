@@ -72,11 +72,8 @@ namespace Samson
             int currentStateHash = stateInfo.shortNameHash;
 
             // Do Avatar swap
-            animator.enabled = false;
             animator.avatar = CurrentModelObject.ModelAvatar;
-            animator.enabled = true;
             animator.Rebind();
-            animator.Update(0f); // force update immediately
 
             // Restore animation
             animator.Play(currentStateHash, 0, normalizedTime);

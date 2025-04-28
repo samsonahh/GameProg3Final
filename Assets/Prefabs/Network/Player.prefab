@@ -121,8 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75a38e29dcd005c4884313794d7115ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragForce: 15
-  dragDamping: 2.5
+  dragForce: 4
+  dragDamping: 3
   dragBreakDistance: 10
   dragMinDistance: 1
   dragMaxDistance: 5

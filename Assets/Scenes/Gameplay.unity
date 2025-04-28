@@ -651,6 +651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragMaxForce: 25
+  dragAngularDamp: 20
   dragIdleExpireTime: 5
   _Draggers:
     _items: []
@@ -1756,6 +1757,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragMaxForce: 25
+  dragAngularDamp: 20
   dragIdleExpireTime: 5
   _Draggers:
     _items: []
@@ -1966,6 +1968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragMaxForce: 25
+  dragAngularDamp: 20
   dragIdleExpireTime: 5
   _Draggers:
     _items: []
@@ -2146,6 +2149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragMaxForce: 25
+  dragAngularDamp: 20
   dragIdleExpireTime: 5
   _Draggers:
     _items: []
@@ -2341,6 +2345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragMaxForce: 25
+  dragAngularDamp: 20
   dragIdleExpireTime: 5
   _Draggers:
     _items: []

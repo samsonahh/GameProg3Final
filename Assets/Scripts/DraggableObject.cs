@@ -14,11 +14,14 @@ namespace Samson
         public NetworkDictionary<PlayerRef, PlayerObjectDragger> Draggers => default;
 
         [SerializeField] private float dragMaxForce = 25f;
+        [SerializeField] private float dragAngularDamp = 20f;
         [SerializeField] private float dragIdleExpireTime = 5f;
+        private float originalAngularDamp;
 
-        public override void Spawned()
+        private void Awake()
         {
             rigidBody = GetComponent<Rigidbody>();
+            originalAngularDamp = rigidBody.angularDrag;
         }
 
         public override void FixedUpdateNetwork()
@@ -27,6 +30,7 @@ namespace Samson
             if (Draggers.Count <= 0)
             {
                 rigidBody.useGravity = true;
+                rigidBody.angularDrag = originalAngularDamp;
                 return;
             }
 
@@ -87,6 +91,7 @@ namespace Samson
 
             Draggers.Add(player, playerObjectDragger);
             rigidBody.useGravity = false;
+            rigidBody.angularDrag = dragAngularDamp;
         }
 
         [Rpc(RpcSources.All, RpcTargets.StateAuthority)]

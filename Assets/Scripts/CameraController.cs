@@ -5,9 +5,12 @@ using UnityEngine;
 
 namespace Samson
 {
-    public class FirstPersonCamera : MonoBehaviour
+    public class CameraController : MonoBehaviour
     {
+        private PlayerMovement playerMovement;
         private PlayerModelManager playerModelManager;
+
+        [SerializeField] private float distanceFromTarget = 5f;
         [SerializeField] private float mouseSensitivity = 10f;
 
         public float DefaultFOV { get; private set; }
@@ -28,11 +31,18 @@ namespace Samson
         private void LateUpdate()
         {
             if (playerModelManager == null) return;
-            transform.position = playerModelManager.CurrentModelObject.HeadTransform.position;
 
+            ReadCameraInputs();
+
+            HandleFirstPersonCamera();
+            HandleThirdPersonCamera();
+        }
+
+        private void ReadCameraInputs()
+        {
             if (PlayerUI.Instance != null)
             {
-                if(PlayerUI.Instance.IsMenuOpen) return;
+                if (PlayerUI.Instance.IsMenuOpen) return;
             }
             float mouseX = Input.GetAxis("Mouse X");
             float mouseY = Input.GetAxis("Mouse Y");
@@ -41,13 +51,41 @@ namespace Samson
             verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
 
             horizontalRotation += mouseX * mouseSensitivity;
+        }
 
+        private void HandleFirstPersonCamera()
+        {
+            if (playerMovement.IsDancing) return;
+
+            if (playerModelManager.CurrentModelObject.gameObject.layer != LayerMask.NameToLayer("HideFromLocal"))
+            {
+                playerModelManager.CurrentModelObject.HideFromLocal();
+            }
+
+            transform.position = playerModelManager.CurrentModelObject.HeadTransform.position;
             transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
+        }
+
+        private void HandleThirdPersonCamera()
+        {
+            if (!playerMovement.IsDancing) return;
+
+            if(playerModelManager.CurrentModelObject.gameObject.layer == LayerMask.NameToLayer("HideFromLocal"))
+            {
+                playerModelManager.CurrentModelObject.ShowToAll();
+            }
+
+            Quaternion cameraRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
+
+            Vector3 offset = cameraRotation * (distanceFromTarget * Vector3.back);
+            transform.position = playerModelManager.CurrentModelObject.HeadTransform.position + offset;
+            transform.rotation = cameraRotation;
         }
 
         public void AssignPlayerTarget(PlayerModelManager modelManager)
         {
             playerModelManager = modelManager;
+            playerMovement = modelManager.GetComponent<PlayerMovement>();
         }
 
         public void ChangeFOV(float targetFOV)

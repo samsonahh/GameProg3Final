@@ -21,6 +21,8 @@ namespace Samson
 
     public class PlayerObjectDragger : NetworkBehaviour
     {
+        private PlayerModelManager playerModelManager;
+
         [Header("Drag Config")]
         [SerializeField] private float dragForce = 10f;
         [SerializeField] private float dragDamping = 5f;
@@ -45,6 +47,11 @@ namespace Samson
         [Header("Launch Config")]
         [SerializeField] private float shootForce = 25f;
 
+        private void Awake()
+        {
+            playerModelManager = GetComponent<PlayerModelManager>();
+        }
+
         private void Update()
         {
             if (!HasStateAuthority) return;
@@ -62,7 +69,8 @@ namespace Samson
 
         private void AssignAimRay()
         {
-            aimRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            aimRay = new Ray(playerModelManager.CurrentModelObject.HeadTransform.position, cameraRay.direction);
         }
 
         private void ReadDragInput()

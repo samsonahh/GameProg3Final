@@ -1833,6 +1833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4018420be04b3254cbeed496395bbecd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  crossHairObject: {fileID: 4416476903138720256}
   pingText: {fileID: 6179233828151984496}
   menuPanel: {fileID: 5679847840819615700}
   gameplayPanel: {fileID: 6060508554000742492}

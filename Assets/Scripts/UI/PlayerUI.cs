@@ -17,8 +17,11 @@ namespace Samson
         private NetworkRunner networkRunner;
         private GameObject playerObject;
         
-        private FirstPersonCamera firstPersonCamera;
+        private CameraController firstPersonCamera;
+        private PlayerMovement playerMovement;
         private PlayerModelManager playerModelManager;
+
+        [SerializeField] private GameObject crossHairObject;
 
         [Header("Ping")]
         [SerializeField] private TMP_Text pingText;
@@ -43,8 +46,9 @@ namespace Samson
 
             this.networkRunner = networkRunner;
             this.playerObject = playerObject;
-            firstPersonCamera = Camera.main.GetComponent<FirstPersonCamera>();
+            firstPersonCamera = Camera.main.GetComponent<CameraController>();
             playerModelManager = playerObject.GetComponent<PlayerModelManager>();
+            playerMovement = playerObject.GetComponent<PlayerMovement>();
 
             OpenMenu(false);
 
@@ -54,6 +58,7 @@ namespace Samson
         private void Update()
         {
             UpdatePingText();
+            HandleCrosshairVisibility();
 
             ReadMenuInput();
             ReadMouseSensitivitySlider();
@@ -69,6 +74,11 @@ namespace Samson
                 double pingMs = networkRunner.GetPlayerRtt(PlayerRef.None) * 1000f;
                 pingText.text = $"{pingMs:F0} ms";
             }
+        }
+
+        private void HandleCrosshairVisibility()
+        {
+            crossHairObject.SetActive(!playerMovement.IsDancing);
         }
 
         private void ReadMenuInput()

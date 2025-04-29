@@ -11,7 +11,7 @@ namespace Samson
 
         [Header("Camera")]
         [SerializeField] private Transform headTransform;
-        public FirstPersonCamera FirstPersonCamera { get; private set; }
+        public CameraController FirstPersonCamera { get; private set; }
 
         [Header("Movement")]
         [SerializeField] private float baseSpeed = 2f;
@@ -48,7 +48,7 @@ namespace Samson
         {
             if (HasStateAuthority)
             {
-                FirstPersonCamera = Camera.main.GetComponent<FirstPersonCamera>();
+                FirstPersonCamera = Camera.main.GetComponent<CameraController>();
                 FirstPersonCamera.AssignPlayerTarget(GetComponent<PlayerModelManager>());
             }
         }
@@ -141,6 +141,8 @@ namespace Samson
 
         private void HandleNetworkRotation()
         {
+            if(IsDancing) return;
+
             Quaternion targetRotation = Quaternion.Euler(0f, FirstPersonCamera.transform.eulerAngles.y, 0f);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Runner.DeltaTime);
         }

@@ -12,6 +12,11 @@ namespace Samson
             SetLayerRecursively(gameObject, LayerMask.NameToLayer("HideFromLocal"));
         }
 
+        public void ShowToAll()
+        {
+            SetLayerRecursively(gameObject, 0);
+        }
+
         private void SetLayerRecursively(GameObject obj, int newLayer)
         {
             obj.layer = newLayer;

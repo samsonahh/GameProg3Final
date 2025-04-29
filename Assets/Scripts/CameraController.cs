@@ -55,7 +55,7 @@ namespace Samson
 
         private void HandleFirstPersonCamera()
         {
-            if (playerMovement.IsDancing) return;
+            if (!IsFirstPersonCameraActive()) return;
 
             if (playerModelManager.CurrentModelObject.gameObject.layer != LayerMask.NameToLayer("HideFromLocal"))
             {
@@ -66,11 +66,16 @@ namespace Samson
             transform.rotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);
         }
 
+        private bool IsFirstPersonCameraActive()
+        {
+            return !playerMovement.IsRagdolled && !playerMovement.IsDancing;
+        }
+
         private void HandleThirdPersonCamera()
         {
-            if (!playerMovement.IsDancing) return;
+            if (IsFirstPersonCameraActive()) return;
 
-            if(playerModelManager.CurrentModelObject.gameObject.layer == LayerMask.NameToLayer("HideFromLocal"))
+            if (playerModelManager.CurrentModelObject.gameObject.layer == LayerMask.NameToLayer("HideFromLocal"))
             {
                 playerModelManager.CurrentModelObject.ShowToAll();
             }

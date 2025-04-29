@@ -22,6 +22,7 @@ namespace Samson
     public class PlayerObjectDragger : NetworkBehaviour
     {
         private PlayerModelManager playerModelManager;
+        private PlayerMovement playerMovement;
 
         [Header("Drag Config")]
         [SerializeField] private float dragForce = 10f;
@@ -50,11 +51,18 @@ namespace Samson
         private void Awake()
         {
             playerModelManager = GetComponent<PlayerModelManager>();
+            playerMovement = GetComponent<PlayerMovement>();
         }
 
         private void Update()
         {
             if (!HasStateAuthority) return;
+
+            if(playerMovement.IsDancing || playerMovement.IsRagdolled)
+            {
+                if(currentDragObject != null) EndDrag(currentDragObject);
+                return;
+            }
 
             AssignAimRay();
 

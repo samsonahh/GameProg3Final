@@ -55,21 +55,11 @@ namespace Samson
 
             PlayerDragData dragData = objectDragger.CurrentDragData;
             if(!draggers.TryGetValue(Object.InputAuthority, out DragVisualData dragVisualData)) return;
-            
-            if (Runner.LocalPlayer != Object.InputAuthority)
-            {
-                dragVisualData.AimVisual.transform.position = Vector3.Lerp(dragVisualData.AimVisual.transform.position, dragData.TargetPosition, nonLocalLerpSpeed * Time.deltaTime);
 
-                dragVisualData.MagnetLine.SetPosition(0, dragVisualData.PointVisual.transform.position);
-                dragVisualData.MagnetLine.SetPosition(1, dragVisualData.AimVisual.transform.position);
-            }
-            else
-            {
-                dragVisualData.AimVisual.transform.position = dragData.TargetPosition;
+            dragVisualData.AimVisual.transform.position = Vector3.Lerp(dragVisualData.AimVisual.transform.position, dragData.TargetPosition, nonLocalLerpSpeed * Time.deltaTime);
 
-                dragVisualData.MagnetLine.SetPosition(0, dragVisualData.PointVisual.transform.position);
-                dragVisualData.MagnetLine.SetPosition(1, dragData.TargetPosition);
-            }
+            dragVisualData.MagnetLine.SetPosition(0, dragVisualData.PointVisual.transform.position);
+            dragVisualData.MagnetLine.SetPosition(1, dragVisualData.AimVisual.transform.position);
 
             draggers[Runner.LocalPlayer] = dragVisualData;
 

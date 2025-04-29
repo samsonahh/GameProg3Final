@@ -11,6 +11,7 @@ namespace Samson
     {
         private Animator animator;
         private RigBuilder rigBuilder;
+        private PlayerMovement playerMovement;
 
         [Header("References")]
         [SerializeField] private Rig rigRoot;
@@ -35,6 +36,7 @@ namespace Samson
         {
             animator = GetComponent<Animator>();
             rigBuilder = GetComponent<RigBuilder>();
+            playerMovement = GetComponent<PlayerMovement>();
         }
 
         public override void Spawned()
@@ -93,6 +95,8 @@ namespace Samson
             OnLocalModelChanged.Invoke(CurrentModel);
 
             rigBuilder.Build();
+
+            playerMovement.RagdollPlayer(playerMovement.IsRagdolled);
         }
 
         private void OnModelChanged()

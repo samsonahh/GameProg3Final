@@ -38,9 +38,14 @@ namespace Samson
         private bool dancePressed;
         public Action<bool> OnDance = delegate { };
 
+        private RagdollEnabler ragdollEnabler;
+        [Networked] public bool IsRagdolled { get; private set; }
+        public Action OnRagdoll = delegate { };
+
         private void Awake()
         {
             controller = GetComponent<CharacterController>();
+            ragdollEnabler = GetComponent<RagdollEnabler>();
         }
 
         public override void Spawned()
@@ -50,6 +55,8 @@ namespace Samson
                 FirstPersonCamera = Camera.main.GetComponent<CameraController>();
                 FirstPersonCamera.AssignPlayerTarget(GetComponent<PlayerModelManager>());
             }
+
+            ragdollEnabler.EnableRagdoll(IsRagdolled);
         }
 
         void Update()
@@ -66,6 +73,12 @@ namespace Samson
                 yVelocity = -1;
                 isJumping = false;
                 OnGrounded.Invoke();
+            }
+
+            if (IsRagdolled)
+            {
+                IsDancing = false;
+                return;
             }
 
             Vector3 moveInput = GetMoveInput();
@@ -85,6 +98,8 @@ namespace Samson
 
         private void ReadInputs()
         {
+            if (IsRagdolled) return;
+
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
                 dancePressed = true;
@@ -173,6 +188,14 @@ namespace Samson
                 OnDance.Invoke(IsDancing);
             }
             dancePressed = false;
+        }
+
+        public void RagdollPlayer(bool isRagdolled)
+        {
+            IsRagdolled = isRagdolled;
+            ragdollEnabler.EnableRagdoll(isRagdolled);
+
+            if(isRagdolled) OnRagdoll.Invoke();
         }
     }
 }

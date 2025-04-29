@@ -9,8 +9,7 @@ namespace Samson
     {
         private CharacterController controller;
 
-        [Header("Camera")]
-        [SerializeField] private Transform headTransform;
+        [field: Header("Camera")]
         public CameraController FirstPersonCamera { get; private set; }
 
         [Header("Movement")]

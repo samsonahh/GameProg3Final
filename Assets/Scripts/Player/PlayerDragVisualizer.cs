@@ -10,6 +10,9 @@ namespace Samson
     {
         private PlayerObjectDragger objectDragger;
 
+        [Header("References")]
+        [SerializeField] private Transform playerDragTargetTransform;
+
         [Header("Drag Visual Config")]
         [SerializeField] private GameObject dragSphereVisualizerPrefab;
         [SerializeField] private float nonLocalLerpSpeed = 15f;
@@ -69,6 +72,9 @@ namespace Samson
             }
 
             draggers[Runner.LocalPlayer] = dragVisualData;
+
+            // For rigging
+            playerDragTargetTransform.position = dragData.TargetPosition;
         }
 
         private void ObjectDragger_OnDragStart(DraggableObject draggedObject, PlayerDragData dragData)

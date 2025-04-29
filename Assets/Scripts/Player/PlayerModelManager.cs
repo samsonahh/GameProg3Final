@@ -1,13 +1,19 @@
 ﻿using AYellowpaper.SerializedCollections;
 using Fusion;
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace Samson
 {
     public class PlayerModelManager : NetworkBehaviour
     {
         private Animator animator;
+        private RigBuilder rigBuilder;
+
+        [Header("References")]
+        [SerializeField] private Rig rigRoot;
 
         public enum Model
         {
@@ -21,12 +27,14 @@ namespace Samson
 
         [Networked, OnChangedRender(nameof(OnModelChanged))] public Model CurrentModel { get; set; } = Model.YBOT;
         [field: SerializeField] public PlayerModel CurrentModelObject { get; private set; }
+        public Action<Model> OnLocalModelChanged = delegate { };
 
         public Transform HeadTransform { get; private set; }
 
         private void Awake()
         {
             animator = GetComponent<Animator>();
+            rigBuilder = GetComponent<RigBuilder>();
         }
 
         public override void Spawned()
@@ -52,6 +60,8 @@ namespace Samson
 
         private void ChangeModelLocal(Model newModel, bool force = false)
         {
+            rigRoot.transform.SetParent(transform);
+
             if (CurrentModelObject != null)
             {
                 Destroy(CurrentModelObject.gameObject);
@@ -59,6 +69,8 @@ namespace Samson
 
             CurrentModelObject = Instantiate(models[newModel], transform.position, transform.rotation, transform);
             if(Object.InputAuthority == Runner.LocalPlayer) CurrentModelObject.HideFromLocal();
+
+            rigRoot.transform.SetParent(CurrentModelObject.transform);
 
             StartCoroutine(DelayedAnimatorRebind());
         }
@@ -77,6 +89,10 @@ namespace Samson
 
             // Restore animation
             animator.Play(currentStateHash, 0, normalizedTime);
+
+            OnLocalModelChanged.Invoke(CurrentModel);
+
+            rigBuilder.Build();
         }
 
         private void OnModelChanged()

@@ -361,6 +361,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 434e8ea1512373b498700be0f638d3ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  distanceFromTarget: 5
   mouseSensitivity: 4
 --- !u!1 &410087039
 GameObject:

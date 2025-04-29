@@ -67,6 +67,13 @@ namespace Samson
                 if(finalForce.magnitude > dragMaxForce) finalForce = finalForce.normalized * dragMaxForce;
                  
                 rigidBody.AddForceAtPosition(finalForce, worldDragPoint, ForceMode.Force);
+                
+                // This part is to rotate the object to face the dragger
+                Vector3 toDraggerDirection = (dragData.AimOrigin - rigidBody.worldCenterOfMass).normalized;
+                Vector3 objectAimForward = (worldDragPoint - rigidBody.worldCenterOfMass).normalized;
+
+                Quaternion targetRotation = Quaternion.FromToRotation(objectAimForward, toDraggerDirection) * rigidBody.rotation;
+                rigidBody.MoveRotation(Quaternion.Slerp(rigidBody.rotation, targetRotation, Runner.DeltaTime * dragData.Force));
             }
         }
 

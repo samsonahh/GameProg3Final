@@ -19,7 +19,6 @@ namespace Samson
         {
             public GameObject AimVisual;
             public GameObject PointVisual;
-            public LineRenderer AimLine;
             public LineRenderer MagnetLine;
         }
 
@@ -58,18 +57,12 @@ namespace Samson
             {
                 dragVisualData.AimVisual.transform.position = Vector3.Lerp(dragVisualData.AimVisual.transform.position, dragData.TargetPosition, nonLocalLerpSpeed * Time.deltaTime);
 
-                dragVisualData.AimLine.SetPosition(0, Vector3.Lerp(dragVisualData.AimLine.GetPosition(0), dragData.AimOrigin, nonLocalLerpSpeed * Time.deltaTime));
-                dragVisualData.AimLine.SetPosition(1, dragVisualData.AimVisual.transform.position);
-
                 dragVisualData.MagnetLine.SetPosition(0, dragVisualData.PointVisual.transform.position);
                 dragVisualData.MagnetLine.SetPosition(1, dragVisualData.AimVisual.transform.position);
             }
             else
             {
                 dragVisualData.AimVisual.transform.position = dragData.TargetPosition;
-
-                dragVisualData.AimLine.SetPosition(0, dragData.AimOrigin);
-                dragVisualData.AimLine.SetPosition(1, dragData.TargetPosition);
 
                 dragVisualData.MagnetLine.SetPosition(0, dragVisualData.PointVisual.transform.position);
                 dragVisualData.MagnetLine.SetPosition(1, dragData.TargetPosition);
@@ -108,15 +101,12 @@ namespace Samson
 
             GameObject dragAimVisual = Instantiate(dragSphereVisualizerPrefab, targetPoint, Quaternion.identity);
             GameObject dragPointVisual = Instantiate(dragSphereVisualizerPrefab, draggedObject.transform.TransformPoint(dragPointLocal), Quaternion.identity, draggedObject.transform);
-            LineRenderer aimLine = CreateLine(aimOrigin, targetPoint, Color.red);
-            if (player == Runner.LocalPlayer) aimLine.gameObject.layer = LayerMask.NameToLayer("HideFromLocal");
             LineRenderer magnetLine = CreateLine(dragPointVisual.transform.position, targetPoint, Color.red);
 
             draggers.Add(player, new DragVisualData
             {
                 AimVisual = dragAimVisual,
                 PointVisual = dragPointVisual,
-                AimLine = aimLine,
                 MagnetLine = magnetLine,
             });
         }
@@ -135,7 +125,6 @@ namespace Samson
 
             if(dragVisualData.AimVisual != null) Destroy(dragVisualData.AimVisual);
             if (dragVisualData.PointVisual != null) Destroy(dragVisualData.PointVisual);
-            if (dragVisualData.AimLine != null) Destroy(dragVisualData.AimLine.gameObject);
             if (dragVisualData.MagnetLine != null) Destroy(dragVisualData.MagnetLine.gameObject);
 
             draggers.Remove(player);

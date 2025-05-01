@@ -17,6 +17,11 @@ namespace Samson
             playerMovement = GetComponent<PlayerMovement>();
         }
 
+        private void OnDestroy()
+        {
+            EnableRagdoll(false);
+        }
+
         private void FixedUpdate()
         {
             if (playerMovement.IsRagdolled)

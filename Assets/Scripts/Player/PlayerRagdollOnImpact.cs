@@ -18,13 +18,28 @@ namespace Samson
 
         private void OnTriggerEnter(Collider collision)
         {
-            if (!HasStateAuthority) return;
+            if (!Runner.IsSharedModeMasterClient)
+            {
+                Debug.LogWarning($"Player {Runner.LocalPlayer} is not the local player, ignoring collision.");
+                return;
+            }
             if (playerMovement.IsRagdolled) return;
 
-            Rigidbody hitRigidbody = collision.attachedRigidbody;
-            if(hitRigidbody == null) return;
+            Rigidbody hitBody = collision.attachedRigidbody;
+            if (hitBody == null)
+            {
+                Debug.Log($"Hit object {collision.gameObject.name} has no rigidbody, ignoring.");
+                return;
+            }
 
-            float impactForce = hitRigidbody.velocity.magnitude * hitRigidbody.mass;
+            DraggableObject draggableObject = hitBody.GetComponent<DraggableObject>();
+            if(draggableObject == null)
+            {
+                Debug.Log($"Hit object {collision.gameObject.name} is not draggable object");
+                return;
+            }
+
+            float impactForce = hitBody.velocity.magnitude * hitBody.mass;
 
             Debug.Log($"Hit by {collision.gameObject.name} with force: {impactForce}");
 
@@ -34,10 +49,14 @@ namespace Samson
             }
         }
 
-        [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+        [Rpc(RpcSources.All, RpcTargets.All)]
         private void TriggerRagdollRpc()
         {
-            if (playerMovement.IsRagdolled) return;
+            if (playerMovement.IsRagdolled)
+            {
+                Debug.LogWarning($"{playerMovement.gameObject.name} Ragdoll already active, ignoring RPC trigger.");
+                return;
+            }
 
             StartCoroutine(HandleRagdoll());
         }

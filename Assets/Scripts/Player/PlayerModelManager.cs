@@ -96,7 +96,7 @@ namespace Samson
 
             rigBuilder.Build();
 
-            playerMovement.RagdollPlayer(playerMovement.IsRagdolled);
+            playerMovement.OnRagdolledChange();
         }
 
         private void OnModelChanged()

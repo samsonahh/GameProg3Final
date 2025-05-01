@@ -39,7 +39,8 @@ namespace Samson
         public Action<bool> OnDance = delegate { };
 
         private RagdollEnabler ragdollEnabler;
-        [Networked] public bool IsRagdolled { get; private set; }
+        [Networked, OnChangedRender(nameof(OnRagdolledChange))]
+        public bool IsRagdolled { get; private set; }
         public Action OnRagdoll = delegate { };
 
         private void Awake()
@@ -56,7 +57,7 @@ namespace Samson
                 FirstPersonCamera.AssignPlayerTarget(GetComponent<PlayerModelManager>());
             }
 
-            ragdollEnabler.EnableRagdoll(IsRagdolled);
+            OnRagdolledChange();
         }
 
         void Update()
@@ -190,9 +191,18 @@ namespace Samson
             dancePressed = false;
         }
 
+        public void OnRagdolledChange()
+        {
+            RagdollPlayerLocal(IsRagdolled);
+        }
+
         public void RagdollPlayer(bool isRagdolled)
         {
             IsRagdolled = isRagdolled;
+        }
+
+        public void RagdollPlayerLocal(bool isRagdolled)
+        {
             ragdollEnabler.EnableRagdoll(isRagdolled);
 
             if(isRagdolled) OnRagdoll.Invoke();

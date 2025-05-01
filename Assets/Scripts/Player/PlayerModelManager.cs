@@ -22,6 +22,7 @@ namespace Samson
             PETER,
             MIKU,
             SANS,
+            GURA,
         }
 
         [SerializeField, SerializedDictionary("Model Type", "Prefab")]

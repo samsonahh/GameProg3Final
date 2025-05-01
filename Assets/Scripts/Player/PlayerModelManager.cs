@@ -21,6 +21,7 @@ namespace Samson
             YBOT,
             PETER,
             MIKU,
+            SANS,
         }
 
         [SerializeField, SerializedDictionary("Model Type", "Prefab")]

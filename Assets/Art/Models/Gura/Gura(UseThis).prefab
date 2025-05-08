@@ -1107,6 +1107,18 @@ CharacterJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!137 &7774649184894427056 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1630794972795428178, guid: 671e6711935fde14d96fb43214793989,
+    type: 3}
+  m_PrefabInstance: {fileID: 9026521379660317410}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &7938358011541397421 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7823293702887809713, guid: 671e6711935fde14d96fb43214793989,
+    type: 3}
+  m_PrefabInstance: {fileID: 9026521379660317410}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8156906945404187504 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 898330654941704594, guid: 671e6711935fde14d96fb43214793989,
@@ -1227,6 +1239,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ca95c5f326e30f4699e45a3dcbbaa8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  renderers:
+  - {fileID: 7774649184894427056}
+  - {fileID: 7938358011541397421}
   <HeadTransform>k__BackingField: {fileID: 8478910470876725761}
   <ModelAvatar>k__BackingField: {fileID: 9000000, guid: 671e6711935fde14d96fb43214793989,
     type: 3}

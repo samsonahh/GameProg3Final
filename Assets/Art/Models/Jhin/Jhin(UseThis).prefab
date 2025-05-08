@@ -260,6 +260,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2267893583644946521}
   m_SourcePrefab: {fileID: 100100000, guid: b29239dd23d5e7949a374fae154b1a5f, type: 3}
+--- !u!137 &6467297635345271228 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700000, guid: b29239dd23d5e7949a374fae154b1a5f,
+    type: 3}
+  m_PrefabInstance: {fileID: 6467297635348480540}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6467297635348382880 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100028, guid: b29239dd23d5e7949a374fae154b1a5f,
@@ -840,6 +846,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ca95c5f326e30f4699e45a3dcbbaa8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  renderers:
+  - {fileID: 6467297635345271228}
   <HeadTransform>k__BackingField: {fileID: 459726768313545371}
   <ModelAvatar>k__BackingField: {fileID: 9000000, guid: b29239dd23d5e7949a374fae154b1a5f,
     type: 3}

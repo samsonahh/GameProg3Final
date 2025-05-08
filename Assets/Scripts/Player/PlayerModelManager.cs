@@ -35,6 +35,8 @@ namespace Samson
 
         public Transform HeadTransform { get; private set; }
 
+        public bool HideFromLocal { get; private set; }
+
         private void Awake()
         {
             animator = GetComponent<Animator>();
@@ -73,7 +75,7 @@ namespace Samson
             }
 
             CurrentModelObject = Instantiate(models[newModel], transform.position, transform.rotation, transform);
-            if(Object.InputAuthority == Runner.LocalPlayer) CurrentModelObject.HideFromLocal();
+            CurrentModelObject.HideFromLocal(HideFromLocal);
 
             rigRoot.transform.SetParent(CurrentModelObject.transform);
 
@@ -105,6 +107,12 @@ namespace Samson
         private void OnModelChanged()
         {
             ChangeModelLocal(CurrentModel);
+        }
+        
+        public void HideModelFromLocal(bool isHiding)
+        {
+            HideFromLocal = isHiding;
+            CurrentModelObject.HideFromLocal(isHiding);
         }
     }
 }

@@ -18,15 +18,33 @@ namespace Samson
         [SerializeField] private float dragIdleExpireTime = 5f;
         private float originalAngularDamp;
 
+        private Vector3 initialPosition;
+        private Quaternion initialRotation;
+
         private void Awake()
         {
             rigidBody = GetComponent<Rigidbody>();
             originalAngularDamp = rigidBody.angularDrag;
         }
 
+        public override void Spawned()
+        {
+            if(!HasStateAuthority) return;
+            initialPosition = transform.position;
+            initialRotation = transform.rotation;
+        }
+
         public override void FixedUpdateNetwork()
         {
             if(!HasStateAuthority) return;
+
+            if(transform.position.y < -10)
+            {
+                rigidBody.MovePosition(initialPosition);
+                rigidBody.MoveRotation(initialRotation);
+                rigidBody.velocity = Vector3.zero;
+            }
+
             if (Draggers.Count <= 0)
             {
                 rigidBody.useGravity = true;

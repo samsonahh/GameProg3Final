@@ -922,6 +922,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ca95c5f326e30f4699e45a3dcbbaa8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  renderers:
+  - {fileID: 6365842972691851250}
   <HeadTransform>k__BackingField: {fileID: 2110052545149892084}
   <ModelAvatar>k__BackingField: {fileID: 9000000, guid: e55bea5413a569e44863739cfceaa03d,
     type: 3}
@@ -985,6 +987,12 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!137 &6365842972691851250 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -9206272340914203568, guid: e55bea5413a569e44863739cfceaa03d,
+    type: 3}
+  m_PrefabInstance: {fileID: 6369431696273109922}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6520057885662228964 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -9070493210130169274, guid: e55bea5413a569e44863739cfceaa03d,

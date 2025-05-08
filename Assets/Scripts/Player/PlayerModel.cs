@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Samson
 {
     public class PlayerModel : MonoBehaviour
     {
+        [SerializeField] private List<Renderer> renderers = new();
+
         [field: SerializeField] public Transform HeadTransform { get; private set; }
         [field: SerializeField] public Avatar ModelAvatar { get; private set; }
 
@@ -27,22 +30,11 @@ namespace Samson
             Colliders = HipBone.GetComponentsInChildren<Collider>();
         }
 
-        public void HideFromLocal()
+        public void HideFromLocal(bool isHiding)
         {
-            SetLayerRecursively(gameObject, LayerMask.NameToLayer("HideFromLocal"));
-        }
-
-        public void ShowToAll()
-        {
-            SetLayerRecursively(gameObject, 0);
-        }
-
-        private void SetLayerRecursively(GameObject obj, int newLayer)
-        {
-            obj.layer = newLayer;
-            foreach (Transform child in obj.transform)
+            foreach (var renderer in renderers)
             {
-                SetLayerRecursively(child.gameObject, newLayer);
+                renderer.shadowCastingMode = isHiding ? UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly : UnityEngine.Rendering.ShadowCastingMode.On;
             }
         }
 

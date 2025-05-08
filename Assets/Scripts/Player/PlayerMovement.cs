@@ -44,6 +44,8 @@ namespace Samson
         public bool IsRagdolled { get; private set; }
         public Action OnRagdoll = delegate { };
 
+        private List<Transform> spawns = new();
+
         private void Awake()
         {
             controller = GetComponent<CharacterController>();
@@ -79,10 +81,7 @@ namespace Samson
             {
                 if (controller.enabled)
                 {
-                    controller.enabled = false;
-                    transform.position = new Vector3(0, 2, 0);
-                    yVelocity = 0;
-                    controller.enabled = true;
+                    Respawn();
                 }
             }
 
@@ -223,6 +222,19 @@ namespace Samson
             ragdollEnabler.EnableRagdoll(isRagdolled);
 
             if(isRagdolled) OnRagdoll.Invoke();
+        }
+
+        public void SetSpawns(List<Transform> spawns)
+        {
+            this.spawns = spawns;
+        }
+
+        public void Respawn()
+        {
+            controller.enabled = false;
+            transform.position = spawns[UnityEngine.Random.Range(0, spawns.Count)].position;
+            yVelocity = 0;
+            controller.enabled = true;
         }
     }
 }

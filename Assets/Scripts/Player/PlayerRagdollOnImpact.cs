@@ -31,7 +31,7 @@ namespace Samson
         {
             if (!Runner.IsSharedModeMasterClient)
             {
-                Debug.LogWarning($"Player {Runner.LocalPlayer} is not the host, ignoring collision.");
+                //Debug.LogWarning($"Player {Runner.LocalPlayer} is not the host, ignoring collision.");
                 return;
             }
             if (playerMovement.IsRagdolled) return;
@@ -39,20 +39,20 @@ namespace Samson
             Rigidbody hitBody = collision.attachedRigidbody;
             if (hitBody == null)
             {
-                Debug.Log($"Hit object {collision.gameObject.name} has no rigidbody, ignoring.");
+                //Debug.Log($"Hit object {collision.gameObject.name} has no rigidbody, ignoring.");
                 return;
             }
 
             DraggableObject draggableObject = hitBody.GetComponent<DraggableObject>();
             if(draggableObject == null)
             {
-                Debug.Log($"Hit object {collision.gameObject.name} is not draggable object");
+                //Debug.Log($"Hit object {collision.gameObject.name} is not draggable object");
                 return;
             }
 
             float impactForce = hitBody.velocity.magnitude * hitBody.mass;
 
-            Debug.Log($"Hit by {collision.gameObject.name} with force: {impactForce}");
+            //Debug.Log($"Hit by {collision.gameObject.name} with force: {impactForce}");
 
             if (impactForce >= impactThreshold)
             {
@@ -65,7 +65,7 @@ namespace Samson
         {
             if (playerMovement.IsRagdolled)
             {
-                Debug.LogWarning($"{playerMovement.gameObject.name} Ragdoll already active, ignoring RPC trigger.");
+                //Debug.LogWarning($"{playerMovement.gameObject.name} Ragdoll already active, ignoring RPC trigger.");
                 return;
             }
 

@@ -57,9 +57,9 @@ namespace Samson
         {
             if (!IsFirstPersonCameraActive()) return;
 
-            if (playerModelManager.CurrentModelObject.gameObject.layer != LayerMask.NameToLayer("HideFromLocal"))
+            if (!playerModelManager.HideFromLocal)
             {
-                playerModelManager.CurrentModelObject.HideFromLocal();
+                playerModelManager.HideModelFromLocal(true);
             }
 
             transform.position = playerModelManager.CurrentModelObject.HeadTransform.position;
@@ -75,9 +75,9 @@ namespace Samson
         {
             if (IsFirstPersonCameraActive()) return;
 
-            if (playerModelManager.CurrentModelObject.gameObject.layer == LayerMask.NameToLayer("HideFromLocal"))
+            if (playerModelManager.HideFromLocal)
             {
-                playerModelManager.CurrentModelObject.ShowToAll();
+                playerModelManager.HideModelFromLocal(false);
             }
 
             Quaternion cameraRotation = Quaternion.Euler(verticalRotation, horizontalRotation, 0f);

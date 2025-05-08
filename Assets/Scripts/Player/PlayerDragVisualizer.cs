@@ -70,23 +70,23 @@ namespace Samson
         private void ObjectDragger_OnDragStart(DraggableObject draggedObject, PlayerDragData dragData)
         {
             CreateDragVisual(Runner.LocalPlayer, draggedObject.GetComponent<NetworkObject>(), dragData.LocalDragPoint, dragData.TargetPosition, dragData.AimOrigin);
-            Debug.Log($"{Runner.LocalPlayer}'s {gameObject.name} created visual for local player {Runner.LocalPlayer}");
+            //Debug.Log($"{Runner.LocalPlayer}'s {gameObject.name} created visual for local player {Runner.LocalPlayer}");
             CreateDragVisualRpc(Runner.LocalPlayer, draggedObject.GetComponent<NetworkObject>(), dragData.LocalDragPoint, dragData.TargetPosition, dragData.AimOrigin);
-            Debug.Log($"{Runner.LocalPlayer}'s {gameObject.name} sending RPC to create visuals for {Runner.LocalPlayer}");
+            //Debug.Log($"{Runner.LocalPlayer}'s {gameObject.name} sending RPC to create visuals for {Runner.LocalPlayer}");
         }
 
         private void ObjectDragger_OnDragEnd(DraggableObject draggedObject)
         {
             DestroyDragVisual(Runner.LocalPlayer);
-            Debug.Log($"Destroyed visual for local player {Runner.LocalPlayer}");
+            //Debug.Log($"Destroyed visual for local player {Runner.LocalPlayer}");
             DestroyDragVisualRpc(Runner.LocalPlayer);
-            Debug.Log($"Sending RPC to destroy visuals for {Runner.LocalPlayer}");
+            //Debug.Log($"Sending RPC to destroy visuals for {Runner.LocalPlayer}");
         }
 
         [Rpc(RpcSources.All, RpcTargets.Proxies)]
         private void CreateDragVisualRpc(PlayerRef player, NetworkObject draggedObject, Vector3 dragPointLocal, Vector3 targetPoint, Vector3 aimOrigin)
         {
-            Debug.Log($"Receieved RPC: {Runner.LocalPlayer}'s {gameObject.name} creating drag visual for player {player}");
+            //Debug.Log($"Receieved RPC: {Runner.LocalPlayer}'s {gameObject.name} creating drag visual for player {player}");
 
             CreateDragVisual(player, draggedObject, dragPointLocal, targetPoint, aimOrigin);
         }
@@ -110,7 +110,7 @@ namespace Samson
         [Rpc(RpcSources.All, RpcTargets.Proxies)]
         private void DestroyDragVisualRpc(PlayerRef player)
         {
-            Debug.Log($"Receieved RPC: {Runner.LocalPlayer}'s {gameObject.name} destroying drag visual for player {player}");
+            //Debug.Log($"Receieved RPC: {Runner.LocalPlayer}'s {gameObject.name} destroying drag visual for player {player}");
 
             DestroyDragVisual(player);
         }

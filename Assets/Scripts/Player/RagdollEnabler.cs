@@ -27,16 +27,15 @@ namespace Samson
 
         private void FixedUpdate()
         {
+            if (!playerMovement.IsRagdolled) return;
+
             if (networkObject.HasStateAuthority)
             {
-                if (playerMovement.IsRagdolled)
-                {
-                    transform.position = modelManager.CurrentModelObject.HipBone.position;
-                }
+                transform.position = modelManager.CurrentModelObject.HipBone.position;
             }
             else
             {
-                modelManager.CurrentModelObject.transform.position = transform.position;
+                modelManager.CurrentModelObject.HipBone.position = transform.position;
             }
         }
 

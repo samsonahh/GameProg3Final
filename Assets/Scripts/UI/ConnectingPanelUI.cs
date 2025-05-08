@@ -27,13 +27,13 @@ namespace Samson
         {
             while (true)
             {
-                connectingText.text = "Connecting";
+                connectingText.text = "Connecting to server";
                 yield return new WaitForSeconds(dotDelay);
-                connectingText.text = "Connecting.";
+                connectingText.text = "Connecting to server.";
                 yield return new WaitForSeconds(dotDelay);
-                connectingText.text = "Connecting..";
+                connectingText.text = "Connecting to server..";
                 yield return new WaitForSeconds(dotDelay);
-                connectingText.text = "Connecting...";
+                connectingText.text = "Connecting to server...";
                 yield return new WaitForSeconds(dotDelay);
             }
         }

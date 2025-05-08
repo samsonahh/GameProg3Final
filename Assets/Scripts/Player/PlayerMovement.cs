@@ -75,6 +75,17 @@ namespace Samson
         {
             // FixedUpdateNetwork is only executed on the StateAuthority
 
+            if (transform.position.y < -10f)
+            {
+                if (controller.enabled)
+                {
+                    controller.enabled = false;
+                    transform.position = new Vector3(0, 2, 0);
+                    yVelocity = 0;
+                    controller.enabled = true;
+                }
+            }
+
             if (controller.isGrounded)
             {
                 yVelocity = -1;

@@ -3,18 +3,19 @@ using UnityEngine;
 
 namespace Samson
 {
-    public class HostDisconnectManager : NetworkBehaviour
+    public class HostDisconnectManager : SimulationBehaviour
     {
+        [SerializeField] private GameObject disconnectUI;
+
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
-            // Only non-host clients should care if the master client left
-            if (player != PlayerRef.MasterClient)
+            Debug.Log($"{player} has left. Player is master client: {runner.IsSharedModeMasterClient}");
+            if (runner.IsSharedModeMasterClient)
             {
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-#else
-                Application.OpenURL(Application.absoluteURL);
-#endif
+                Runner.Shutdown();
+                PlayerUI.Instance.gameObject.SetActive(false);
+                PlayerUI.Instance.PlayerObject.SetActive(false);
+                disconnectUI.SetActive(true);
             }
         }
     }

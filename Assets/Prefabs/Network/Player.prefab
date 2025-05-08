@@ -146,8 +146,9 @@ MonoBehaviour:
   playerMovement: {fileID: -710015332866956217}
   ragdollEnabler: {fileID: 376440875703956374}
   networkObject: {fileID: 3928257158043229628}
-  ragdollDuration: 3
-  impactThreshold: 5
+  ragdollDuration: 2
+  impactThreshold: 3
+  impactForceModifier: 2
 --- !u!1 &2263918508491630874
 GameObject:
   m_ObjectHideFlags: 0

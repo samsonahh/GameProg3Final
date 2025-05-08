@@ -7,12 +7,20 @@ namespace Samson
 {
     public class PlayerRagdollOnImpact : NetworkBehaviour
     {
+        private CapsuleCollider capsuleCollider;
+
         [SerializeField] private PlayerMovement playerMovement;
         [SerializeField] private RagdollEnabler ragdollEnabler;
         [SerializeField] private NetworkObject networkObject;
 
         [SerializeField] private float ragdollDuration = 3f;
         [SerializeField] private float impactThreshold = 3f;
+        [SerializeField] private float impactForceModifier = 5f;
+
+        private void Awake()
+        {
+            capsuleCollider = GetComponent<CapsuleCollider>();
+        }
 
         private void Update()
         {
@@ -48,12 +56,12 @@ namespace Samson
 
             if (impactForce >= impactThreshold)
             {
-                TriggerRagdollRpc(hitBody.velocity);
+                TriggerRagdollRpc(hitBody.velocity.magnitude * (capsuleCollider.ClosestPoint(collision.transform.position) - collision.transform.position).normalized);
             }
         }
 
-        [Rpc(RpcSources.All, RpcTargets.All)]
-        private void TriggerRagdollRpc(Vector3 force)
+        [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+        private void TriggerRagdollRpc(Vector3 direction)
         {
             if (playerMovement.IsRagdolled)
             {
@@ -61,13 +69,13 @@ namespace Samson
                 return;
             }
 
-            StartCoroutine(HandleRagdoll(force));
+            StartCoroutine(HandleRagdoll());
+            ragdollEnabler.AddForce(impactForceModifier * direction, ForceMode.Impulse);
         }
 
-        private IEnumerator HandleRagdoll(Vector3 force)
+        private IEnumerator HandleRagdoll()
         {
             playerMovement.RagdollPlayer(true);
-            if(networkObject.HasStateAuthority) ragdollEnabler.AddForce(force, ForceMode.Impulse);
             yield return new WaitForSeconds(ragdollDuration);
             playerMovement.RagdollPlayer(false);
         }

@@ -13,6 +13,7 @@ namespace Samson
     public class PlayerUI : MonoBehaviour
     {
         public static PlayerUI Instance { get; private set; }
+        public GameObject PlayerObject { get; private set; }
 
         private NetworkRunner networkRunner;
         private GameObject playerObject;
@@ -49,6 +50,7 @@ namespace Samson
             firstPersonCamera = Camera.main.GetComponent<CameraController>();
             playerModelManager = playerObject.GetComponent<PlayerModelManager>();
             playerMovement = playerObject.GetComponent<PlayerMovement>();
+            PlayerObject = playerMovement.gameObject;
 
             OpenMenu(false);
 

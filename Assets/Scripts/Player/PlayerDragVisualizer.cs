@@ -15,7 +15,7 @@ namespace Samson
 
         [Header("Drag Visual Config")]
         [SerializeField] private GameObject dragSphereVisualizerPrefab;
-        [SerializeField] private float nonLocalLerpSpeed = 15f;
+        [SerializeField] private float lerpSpeed = 15f;
         private Material lineMaterial;
 
         private struct DragVisualData
@@ -56,7 +56,7 @@ namespace Samson
             PlayerDragData dragData = objectDragger.CurrentDragData;
             if(!draggers.TryGetValue(Object.InputAuthority, out DragVisualData dragVisualData)) return;
 
-            dragVisualData.AimVisual.transform.position = Vector3.Lerp(dragVisualData.AimVisual.transform.position, dragData.TargetPosition, nonLocalLerpSpeed * Time.deltaTime);
+            dragVisualData.AimVisual.transform.position = Vector3.Lerp(dragVisualData.AimVisual.transform.position, dragData.TargetPosition, lerpSpeed * Time.deltaTime);
 
             dragVisualData.MagnetLine.SetPosition(0, dragVisualData.PointVisual.transform.position);
             dragVisualData.MagnetLine.SetPosition(1, dragVisualData.AimVisual.transform.position);

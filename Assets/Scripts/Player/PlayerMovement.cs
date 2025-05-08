@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 namespace Samson
 {
@@ -63,6 +64,11 @@ namespace Samson
         void Update()
         {
             ReadInputs();
+
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                RagdollPlayer(!IsRagdolled);
+            }
         }
 
         public override void FixedUpdateNetwork()

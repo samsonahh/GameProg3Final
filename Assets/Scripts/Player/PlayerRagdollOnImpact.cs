@@ -1,5 +1,6 @@
 ﻿using Fusion;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Samson
@@ -7,6 +8,8 @@ namespace Samson
     public class PlayerRagdollOnImpact : NetworkBehaviour
     {
         [SerializeField] private PlayerMovement playerMovement;
+        [SerializeField] private RagdollEnabler ragdollEnabler;
+        [SerializeField] private NetworkObject networkObject;
 
         [SerializeField] private float ragdollDuration = 3f;
         [SerializeField] private float impactThreshold = 3f;
@@ -20,7 +23,7 @@ namespace Samson
         {
             if (!Runner.IsSharedModeMasterClient)
             {
-                Debug.LogWarning($"Player {Runner.LocalPlayer} is not the local player, ignoring collision.");
+                Debug.LogWarning($"Player {Runner.LocalPlayer} is not the host, ignoring collision.");
                 return;
             }
             if (playerMovement.IsRagdolled) return;
@@ -45,12 +48,12 @@ namespace Samson
 
             if (impactForce >= impactThreshold)
             {
-                TriggerRagdollRpc();
+                TriggerRagdollRpc(hitBody.velocity);
             }
         }
 
         [Rpc(RpcSources.All, RpcTargets.All)]
-        private void TriggerRagdollRpc()
+        private void TriggerRagdollRpc(Vector3 force)
         {
             if (playerMovement.IsRagdolled)
             {
@@ -58,12 +61,13 @@ namespace Samson
                 return;
             }
 
-            StartCoroutine(HandleRagdoll());
+            StartCoroutine(HandleRagdoll(force));
         }
 
-        private IEnumerator HandleRagdoll()
+        private IEnumerator HandleRagdoll(Vector3 force)
         {
             playerMovement.RagdollPlayer(true);
+            if(networkObject.HasStateAuthority) ragdollEnabler.AddForce(force, ForceMode.Impulse);
             yield return new WaitForSeconds(ragdollDuration);
             playerMovement.RagdollPlayer(false);
         }

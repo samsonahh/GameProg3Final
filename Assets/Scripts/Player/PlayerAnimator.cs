@@ -50,6 +50,11 @@ namespace Samson
             playerMovement.OnDance -= PlayerMovement_OnDance;
         }
 
+        public override void Spawned()
+        {
+            OnAnimationStateChanged();
+        }
+
         private void Update()
         {
             animatorMoveSpeed = Mathf.Lerp(animatorMoveSpeed, playerMovement.NetworkedSpeedModifier, animatorMoveSpeedLerpMultiplier * Time.deltaTime);

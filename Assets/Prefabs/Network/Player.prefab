@@ -144,6 +144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMovement: {fileID: -710015332866956217}
+  ragdollEnabler: {fileID: 376440875703956374}
+  networkObject: {fileID: 3928257158043229628}
   ragdollDuration: 3
   impactThreshold: 5
 --- !u!1 &2263918508491630874
@@ -314,7 +316,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragForce: 4
-  dragDamping: 3
+  dragDamping: 2.75
   dragBreakDistance: 10
   dragMinDistance: 1
   dragMaxDistance: 5
@@ -337,7 +339,7 @@ MonoBehaviour:
   playerDragTargetTransform: {fileID: 1000656274125603966}
   dragSphereVisualizerPrefab: {fileID: 3276877055539761359, guid: 06ea3cda71b6e2c44b254c8a0d56eebe,
     type: 3}
-  nonLocalLerpSpeed: 15
+  lerpSpeed: 15
 --- !u!114 &73050348135828534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,6 +546,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4844487029695933666}
     m_Modifications:
+    - target: {fileID: -6755848675802019868, guid: c3db8cb231d6ce64883e3c02fd05e3d1,
+        type: 3}
+      propertyPath: SortKey
+      value: 3427801765
+      objectReference: {fileID: 0}
     - target: {fileID: 6250056642411297992, guid: c3db8cb231d6ce64883e3c02fd05e3d1,
         type: 3}
       propertyPath: m_Name

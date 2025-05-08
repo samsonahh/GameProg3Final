@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Fusion;
+using UnityEngine;
 
 namespace Samson
 {
@@ -8,6 +9,7 @@ namespace Samson
         private CharacterController controller;
         private PlayerModelManager modelManager;
         private PlayerMovement playerMovement;
+        private NetworkObject networkObject;
 
         private void Awake()
         {
@@ -15,6 +17,7 @@ namespace Samson
             controller = GetComponent<CharacterController>();
             modelManager = GetComponent<PlayerModelManager>();
             playerMovement = GetComponent<PlayerMovement>();
+            networkObject = GetComponent<NetworkObject>();
         }
 
         private void OnDestroy()
@@ -24,9 +27,16 @@ namespace Samson
 
         private void FixedUpdate()
         {
-            if (playerMovement.IsRagdolled)
+            if (networkObject.HasStateAuthority)
             {
-                transform.position = modelManager.CurrentModelObject.HipBone.position;
+                if (playerMovement.IsRagdolled)
+                {
+                    transform.position = modelManager.CurrentModelObject.HipBone.position;
+                }
+            }
+            else
+            {
+                modelManager.CurrentModelObject.transform.position = transform.position;
             }
         }
 
